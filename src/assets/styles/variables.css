@@ -1,0 +1,184 @@
+:root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 600;
+
+    color: var(--text-black);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    --text-size-xs: 0.5rem;
+    --text-size-sm: 0.75rem;
+    --text-size-md: 1rem;
+    --text-size-lg: 2rem;
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Colors 🎨 */
+    /* SLATE */
+    --color-slate-950: #020618;
+    --color-slate-900: #0f172b;
+    --color-slate-800: #1d293d;
+    --color-slate-700: #314158;
+    --color-slate-600: #45556c;
+    --color-slate-500: #62748e;
+    --color-slate-400: #90a1b9;
+    --color-slate-300: #cad5e2;
+    --color-slate-200: #e2e8f0;
+    --color-slate-100: #f1f5f9;
+    --color-slate-50: #f8fafc;
+
+    /* RED */
+    --color-red-700: #c10007;
+    --color-red-600: #e7000b;
+    --color-red-500: #fb2c36;
+    --color-red-400: #ff6467;
+
+    --color-yellow-300: #ffdf20;
+    --color-yellow-400: #fdc700;
+    --color-yellow-500: #f0b100;
+    
+    --text-black: #1f1f1f;
+    --text-white: #f8f8fa;    
+    
+
+    /* 🧩 Espaciados */
+    --space-0: 0;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+
+    --space-xs: var(--space-1);
+    --space-sm: var(--space-2);
+    --space-md: var(--space-4);
+    --space-lg: var(--space-6);
+    --space-xl: var(--space-8);
+
+    /* ✨ Sombras base */
+    --shadow-none: none;
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1),
+                 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1),
+                 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1),
+                 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15),
+                 0 10px 10px rgba(0, 0, 0, 0.05);
+    --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+
+    --shadow-card: var(--shadow-sm);
+    --shadow-popup: var(--shadow-lg);
+    --shadow-modal: var(--shadow-xl);
+    --shadow-floating: var(--shadow-2xl);
+
+    /* ──────────────── 🧱 Bordes ──────────────── */
+    --border-none: none;
+    --border-thin: 1px solid rgba(0, 0, 0, 0.1);
+    --border-medium: 2px solid rgba(0, 0, 0, 0.15);
+    --border-thick: 3px solid rgba(0, 0, 0, 0.2);
+
+    /* Alias semánticos */
+    --border-default: var(--border-thin);
+    --border-focus: 2px solid var(--color-primary);
+    --border-error: 2px solid var(--color-error, #e63946);
+
+    /* ──────────────── 🔷 Outlines / Focus Rings ──────────────── */
+
+    /* Grosor base del contorno */
+    --outline-width-sm: 2px;
+    --outline-width-md: 3px;
+    --outline-width-lg: 4px;
+
+    /* Colores base para distintos propósitos */
+    --outline-color-primary: var(--color-slate-500);
+    --outline-color-primary-hover: var(--color-slate-400);
+    --outline-color-primary-active: var(--color-slate-600);
+
+    --outline-color-danger: var(--color-red-500);
+    --outline-color-danger-hover: var(--color-red-400);
+    --outline-color-danger-active: var(--color-red-600);
+
+    --outline-color-neutral: var(--color-slate-300);
+
+    /* Focus ring accesible (reemplazo de outline nativo) */
+    --focus-ring-primary: 0 0 0 var(--outline-width-md) rgba(98, 116, 142, 0.4); /* color-slate-500 */
+    --focus-ring-danger: 0 0 0 var(--outline-width-md) rgba(251, 44, 54, 0.4);   /* color-red-500 */
+    --focus-ring-neutral: 0 0 0 var(--outline-width-md) rgba(202, 213, 226, 0.5); /* color-slate-300 */
+
+    /* Alias semánticos */
+    --focus-ring-button: var(--focus-ring-primary);
+    --focus-ring-input: var(--focus-ring-neutral);
+    --focus-ring-error: var(--focus-ring-danger);
+
+    /* Outline offset: separación visual del borde */
+    --outline-offset: 2px;
+
+    /* ──────────────── 🟣 Radios (curvatura) ──────────────── */
+    --radius-none: 0;
+    --radius-xs: 0.125rem; /* 2px */
+    --radius-sm: 0.25rem;  /* 4px */
+    --radius-md: 0.5rem;   /* 8px */
+    --radius-lg: 0.75rem;  /* 12px */
+    --radius-xl: 1rem;     /* 16px */
+    --radius-full: 9999px; /* completamente redondo */
+
+    /* Alias semánticos */
+    --radius-button: var(--radius-md);
+    --radius-card: var(--radius-lg);
+    --radius-input: var(--radius-sm);
+
+    /* ──────────────── ☁️ Sombras internas (efecto "pressed") ──────────────── */
+    --shadow-inset-xs: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-inset-sm: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+    --shadow-inset-md: inset 0 3px 6px rgba(0, 0, 0, 0.2);
+
+    /* ✨ Sombras para estados activos */
+    --shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.15);
+    --shadow-active: var(--shadow-inset-sm);
+    --shadow-active-primary: inset 0 2px 4px rgba(100, 149, 237, 0.4);
+
+    /* ──────────────── ⚙️ Interacción y Transiciones ──────────────── */
+
+    /* ⏱️ Duraciones y timing functions */
+    --transition-fast: 120ms;
+    --transition-base: 200ms;
+    --transition-slow: 300ms;
+
+    --transition-timing-default: ease-in-out;
+    --transition-timing-decelerate: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-timing-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+    /* ✋ Estados interactivos para botones e inputs */
+
+    /* Primary (basado en slate) */
+    --interactive-primary-hover: var(--color-slate-700);
+    --interactive-primary-active: var(--color-slate-900);
+    --interactive-primary-disabled: var(--color-slate-600);
+    --interactive-primary-text: var(--text-white);
+
+    /* Secondary / Neutral */
+    --interactive-secondary-hover: var(--color-slate-300);
+    --interactive-secondary-active: var(--color-slate-400);
+    --interactive-secondary-disabled: var(--color-slate-100);
+    --interactive-secondary-text: var(--text-black);
+
+    /* Danger */
+    --interactive-danger-hover: var(--color-red-400);
+    --interactive-danger-active: var(--color-red-600);
+    --interactive-danger-disabled: var(--color-red-700);
+    --interactive-danger-text: var(--text-white);
+
+    --icon-size: 24px;
+}
