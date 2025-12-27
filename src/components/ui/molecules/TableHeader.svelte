@@ -1,23 +1,36 @@
 <script lang="ts">
-    interface Props {
-        columns: string[]
-    };
+  import type { Column } from "@lib/interfaces/table";
 
-    let { columns }: Props = $props(); 
+  interface Props {
+    columns: Column[]
+    hasActions?: boolean 
+  };
+
+  let { columns, hasActions = true }: Props = $props(); 
 </script>
 
 <thead>
-    <tr>
-      {#each columns as column}
-        <th>{column}</th>
-      {/each}
-    </tr>
+  <tr>
+    {#each columns as column (column.key)}
+      <th>{column.label}</th>
+    {/each}
+
+    {#if hasActions}
+      <th></th>
+    {/if}
+  </tr>
 </thead>
 
 <style>
   thead {
-    background-color: var(--color-slate-900);
-    color: var(--text-white);
+    position: sticky;
+    color: var(--text-black);
     font-weight: var(--font-weight-semibold);
+    box-shadow: -4px 1px 1px 1px var(--color-slate-800);
+    z-index: 2;
+  }
+
+  thead th {
+    padding: var(--space-2) var(--space-4)
   }
 </style>
