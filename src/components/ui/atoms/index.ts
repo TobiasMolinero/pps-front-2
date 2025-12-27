@@ -8,3 +8,4 @@ export { default as Tooltip } from './Tooltip.svelte';
 export { default as NavItem} from './NavItem.svelte';
 export { default as TableColumn} from './TableColumn.svelte';
 export { default as ToggleMenu} from './ToggleMenu.svelte';
+export { default as PlusIcon } from './DynamicIcons/PlusIcon.svelte';

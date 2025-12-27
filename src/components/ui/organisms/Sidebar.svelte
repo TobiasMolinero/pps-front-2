@@ -8,9 +8,7 @@
 
 <style>
     .sidenav {
-        grid-area: sidenav;
+        flex: 0 0 220px;
         background-color: var(--color-slate-900);
-        width: 220px;
-        height: 100%;
     }
 </style>

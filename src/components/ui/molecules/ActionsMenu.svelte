@@ -76,7 +76,10 @@
     position: relative;
     display: inline-block;
   }
-
+  
+  /* ===============================
+     ESTADO BASE (cerrado)
+     =============================== */
   .menu-list {
     position: absolute;
     bottom: 100%;
@@ -86,30 +89,40 @@
     flex-direction: column;
     row-gap: var(--space-1);
     opacity: 0;
-    height: 0;
+    pointer-events: none; /* 👈 evita interacción y remueve del flujo */
     list-style-type: none;
-    z-index: -1;
+    margin: 0;
+    padding: 0;
+    z-index: 50;
     transition:
-      opacity 200ms,
-      transform 200ms,
-      height 200ms;
+      opacity 200ms ease,
+      transform 200ms ease;
   }
-
-  /* abierto */
+  
+  /* ===============================
+     ESTADO ABIERTO
+     =============================== */
   .menu-list.open {
     opacity: 1;
-    height: fit-content;
+    pointer-events: auto; /* 👈 vuelve interactivo */
     transform: translate(-50%, 0);
-    z-index: 10;
+    z-index: 100;
   }
-
-  /* cuando se está cerrando → mantiene visible hasta terminar animaciones */
+  
+  /* ===============================
+     ESTADO CERRANDO (mantiene visible
+     solo para permitir la animación)
+     =============================== */
   .menu-list.closing {
     opacity: 1;
-    height: fit-content;
+    pointer-events: none;
     transform: translate(-50%, 0);
+    overflow: hidden;
   }
-
+  
+  /* ===============================
+     ÍTEMS DEL MENÚ
+     =============================== */
   .menu-item {
     display: flex;
     justify-content: center;
@@ -121,20 +134,22 @@
     border: none;
     border-radius: var(--radius-xl);
     cursor: pointer;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0.5px 1.5px 3px 1px #00000088;
     scale: 0;
-    transition: scale 200ms
+    transition: scale 200ms;
   }
-
-  /* Ítems del menú */
+  
+  /* Ítems visibles cuando el menú está abierto */
   .menu-item.open {
     scale: 1;
     transition-delay: var(--delay);
   }
+  
   .menu-item.open:hover {
     background: var(--color-slate-950);
   }
-
+  
+  /* Ítems durante la animación de cierre */
   .menu-list.closing .menu-item {
     scale: 0;
     transition-delay: var(--reverse-delay);

@@ -24,10 +24,12 @@
 <style>
   thead {
     position: sticky;
+    top: 0;
+    background: var(--text-white);
     color: var(--text-black);
     font-weight: var(--font-weight-semibold);
     box-shadow: -4px 1px 1px 1px var(--color-slate-800);
-    z-index: 2;
+    z-index: 1;
   }
 
   thead th {

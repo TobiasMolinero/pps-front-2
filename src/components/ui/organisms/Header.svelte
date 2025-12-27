@@ -11,14 +11,12 @@
 
 <style>
     header {
-        grid-area: header;
         display: flex;
         justify-content: space-between;
         align-items: center;
         background-color: var(--color-slate-800);
-        height: 60px;
         width: 100%;
-        padding: 0 var(--space-md)
+        padding: var(--space-sm) var(--space-md)
     }
 
     .logo-container {

@@ -1,36 +1,66 @@
 <script lang="ts">
-    import { TableBody, TableHeader } from "../molecules";
-    import type { Column, } from "@lib/interfaces/table";
+  import type { Action } from "@lib/interfaces/actionsmenu";
+  import { TableHeader, TableBody } from "../molecules";
+  import type { Column, } from "@lib/interfaces/table";
 
-    interface Props<T = Record<string, any>> {
-        columns: Column[]
-        data: T[]
-        actions: any[]
-    };
-
-    let { columns, data, actions }: Props = $props(); 
+  interface Props<T = Record<string, any>> {
+    columns: Column[]
+    data: T[]
+    actions: Action[]
+  };
+  
+  let { columns, data, actions }: Props = $props(); 
 </script>
 
-<div class="container-table">
+<div class="component-container">
+  <div class="table-container">
     <table>
-        <TableHeader {columns} />
-        <TableBody {data} {columns} {actions} />
+      <TableHeader {columns} />
+      <TableBody {columns} {data} {actions} />
     </table>
+  </div>
+  <div class="paginator">
+    <button class="">
+      hola
+    </button>
+  </div>
 </div>
 
 <style>
-    .container-table {
-        scrollbar-width: thin;
-        scrollbar-color: var(--color-slate-800) transparent;
-        border-top: 2px solid var(--color-slate-800)
-    }
+  .component-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
 
-    table {
-        position: relative;
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
-    }
+  .table-container {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-slate-800) transparent;
+    scroll-behavior: smooth;
+    border-top: 2px solid var(--color-slate-800);
+  }
+
+  table {
+    width: 100%;
+    height: auto;
+    border-collapse: collapse;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .paginator {
+    flex-shrink: 0;
+    padding: var(--space-2);
+    background-color: var(--text-white);
+    border-top: 1px solid var(--color-slate-800);
+  }
 </style>
 
 
