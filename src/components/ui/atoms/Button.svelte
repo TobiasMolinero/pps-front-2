@@ -7,6 +7,7 @@
         type?: 'button' | 'submit' | 'reset'
         icon?: Snippet | null
         label?: Snippet | null
+        onclick: () => void
     }
     
     let {
@@ -14,11 +15,12 @@
         disabled = false,
         type = 'button',
         icon,
-        label 
+        label,
+        onclick 
     }: Props = $props()
 </script>
 
-<button class={`btn ${variant}`} {disabled} type={type}>
+<button class={`btn ${variant}`} {disabled} type={type} {onclick}>
     {@render icon?.()}
     {@render label?.()}
 </button>
@@ -64,6 +66,7 @@
         background-color: var(--color-slate-300)
     }
     .secondary:disabled {
+        color: var(--text-black-disabled);
         background-color: var(--color-slate-200)
     }
 
@@ -92,6 +95,7 @@
         background-color: var(--color-yellow-400)
     }
     .warning:disabled {
+        color: var(--text-black-disabled);
         background-color: var(--color-yellow-200);
     }
 

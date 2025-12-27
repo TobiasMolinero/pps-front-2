@@ -5,6 +5,7 @@
   import { addClickOutsideListener } from "@lib/helpers/clickOutside";
   import Tooltip from "../atoms/Tooltip.svelte";
   import { hideAllTooltips } from "@lib/helpers/tooltipEvents";
+  import { findScrollableParent } from "@lib/helpers/findScrollableParent";
 
   interface Props {
     actions: Action[];
@@ -15,6 +16,7 @@
   let menuElement: HTMLDivElement;
   let open: boolean = $state(false);
   let closing: boolean = $state(false);
+  let direction: "up" | "down" = $state("up");
 
   const toggleMenu = () => {
     if (open) {
@@ -26,6 +28,7 @@
         closing = false;
       }, totalDuration);
     } else {
+      checkMenuDirection();
       open = true;
     }
   };
@@ -34,6 +37,28 @@
     hideAllTooltips();
     toggleMenu()
   };
+
+  const checkMenuDirection = () => {
+    if(!menuElement) return;
+    
+    const parent = findScrollableParent(menuElement);
+    if(!parent) return;
+
+    const elementOffsetTop = menuElement.offsetTop;
+    const parentScroll = parent.scrollTop;
+    const parentVisibleHeight = parent.clientHeight;
+
+    const relativeTop = elementOffsetTop - parentScroll;
+    const spaceAbove = relativeTop;
+    const spaceBelow = parentVisibleHeight - (relativeTop + menuElement.offsetHeight);
+
+    const estimatedMenuHeight = actions.length * 50 + 10;
+
+    direction =
+      spaceAbove < estimatedMenuHeight && spaceBelow > spaceAbove
+        ? "down"
+        : "up";
+  }
 
   const handleAction = (action: Action) => {
     action.onClick();
@@ -48,7 +73,7 @@
   });
 </script>
 
-<div bind:this={menuElement} class="actions-menu">
+<div bind:this={menuElement} class="actions-menu" data-direction={direction}>
   <ToggleMenu onclick={toggleMenu} {open} />
 
   <ul class="menu-list" class:open class:closing>
@@ -77,52 +102,51 @@
     display: inline-block;
   }
   
-  /* ===============================
-     ESTADO BASE (cerrado)
-     =============================== */
   .menu-list {
     position: absolute;
-    bottom: 100%;
     left: 50%;
-    transform: translate(-50%, 10px);
     display: flex;
     flex-direction: column;
     row-gap: var(--space-1);
-    opacity: 0;
     pointer-events: none; /* 👈 evita interacción y remueve del flujo */
     list-style-type: none;
     margin: 0;
     padding: 0;
-    z-index: 50;
+    z-index: 9999;
     transition:
       opacity 200ms ease,
       transform 200ms ease;
   }
-  
-  /* ===============================
-     ESTADO ABIERTO
-     =============================== */
-  .menu-list.open {
-    opacity: 1;
-    pointer-events: auto; /* 👈 vuelve interactivo */
+
+    /* dirección hacia arriba (por defecto) */
+  .actions-menu[data-direction="up"] .menu-list {
+    bottom: 100%;
+    transform: translate(-50%, 0px);
+  }
+
+  /* dirección hacia abajo */
+  .actions-menu[data-direction="down"] .menu-list {
+    top: 100%;
+    transform: translateX(-50%) translateY(0px);
+    flex-direction: column-reverse; /* cambia el orden */
+  }
+
+  /* Estado abierto */
+  .actions-menu[data-direction="up"] .menu-list.open {
+    pointer-events: auto;
     transform: translate(-50%, 0);
-    z-index: 100;
   }
   
-  /* ===============================
-     ESTADO CERRANDO (mantiene visible
-     solo para permitir la animación)
-     =============================== */
+  .menu-list.open {
+    pointer-events: auto; /* vuelve interactivo */
+    transform: translate(-50%, 0);
+  }
+  
   .menu-list.closing {
-    opacity: 1;
     pointer-events: none;
     transform: translate(-50%, 0);
-    overflow: hidden;
   }
   
-  /* ===============================
-     ÍTEMS DEL MENÚ
-     =============================== */
   .menu-item {
     display: flex;
     justify-content: center;
@@ -139,7 +163,6 @@
     transition: scale 200ms;
   }
   
-  /* Ítems visibles cuando el menú está abierto */
   .menu-item.open {
     scale: 1;
     transition-delay: var(--delay);
@@ -149,7 +172,6 @@
     background: var(--color-slate-950);
   }
   
-  /* Ítems durante la animación de cierre */
   .menu-list.closing .menu-item {
     scale: 0;
     transition-delay: var(--reverse-delay);

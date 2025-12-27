@@ -29,7 +29,7 @@
     color: var(--text-black);
     font-weight: var(--font-weight-semibold);
     box-shadow: -4px 1px 1px 1px var(--color-slate-800);
-    z-index: 1;
+    z-index: 2;
   }
 
   thead th {

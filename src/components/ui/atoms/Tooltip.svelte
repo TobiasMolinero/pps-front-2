@@ -4,7 +4,7 @@
 
   type Position = "top" | "bottom" | "left" | "right";
 
-  const {
+  let {
     label,
     position = "top",
     children,
@@ -15,7 +15,7 @@
   }>();
 
   let tooltipVisible = $state(false);
-  let actualPosition: Position = $state(position);
+  let actualPosition: Position = $derived(position);
 
   let tooltipEl: HTMLElement;
   let containerEl: HTMLElement;

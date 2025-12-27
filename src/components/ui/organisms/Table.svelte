@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Action } from "@lib/interfaces/actionsmenu";
-  import { TableHeader, TableBody } from "../molecules";
+  import { TableHeader, TableBody, PaginationControls } from "../molecules";
   import type { Column, } from "@lib/interfaces/table";
 
   interface Props<T = Record<string, any>> {
@@ -19,11 +19,7 @@
       <TableBody {columns} {data} {actions} />
     </table>
   </div>
-  <div class="paginator">
-    <button class="">
-      hola
-    </button>
-  </div>
+  <PaginationControls />
 </div>
 
 <style>
@@ -53,13 +49,6 @@
     margin: 0;
     padding: 0;
     position: relative;
-  }
-
-  .paginator {
-    flex-shrink: 0;
-    padding: var(--space-2);
-    background-color: var(--text-white);
-    border-top: 1px solid var(--color-slate-800);
   }
 </style>
 

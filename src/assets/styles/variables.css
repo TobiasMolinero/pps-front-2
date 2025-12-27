@@ -59,8 +59,9 @@
     --color-green-100: #d1fae5;
     --color-green-50:  #ecfdf5;
 
-    --text-black: #202020;
-    --text-white: #f8f8fa;    
+    --text-black: rgb(32, 32, 32);
+    --text-black-disabled: #808080;
+    --text-white: #f8f8fa;
     
 
     /* 🧩 Espaciados */
