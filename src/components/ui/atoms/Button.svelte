@@ -2,7 +2,7 @@
     import type { Snippet } from "svelte";
 
     interface Props {
-        variant?: 'primary' | 'secondary' | 'warning' | 'danger'
+        variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
         disabled?: boolean
         type?: 'button' | 'submit' | 'reset'
         icon?: Snippet | null
@@ -64,12 +64,35 @@
         background-color: var(--color-slate-300)
     }
     .secondary:disabled {
-        background-color: var(--interactive-secondary-disabled)
+        background-color: var(--color-slate-200)
+    }
+
+    .success {
+        background-color: var(--color-green-600);
+        color: var(--text-white);
+    }
+    .success:hover {
+        background-color: var(--color-green-500);
+    }
+    .success:active {
+        background-color: var(--color-green-600);
+    }
+    .success:disabled {
+        background-color: var(--color-green-300);
     }
 
     .warning {
         color: var(--text-black);
-        background-color: var(--color-yellow-300)
+        background-color: var(--color-yellow-400)
+    }
+    .warning:hover {
+        background-color: var(--color-yellow-300);
+    }
+    .warning:active {
+        background-color: var(--color-yellow-400)
+    }
+    .warning:disabled {
+        background-color: var(--color-yellow-200);
     }
 
     .danger {
@@ -78,5 +101,14 @@
     }
     .danger:focus-visible {
         box-shadow: var(--focus-ring-danger)
+    }
+    .danger:hover {
+        background-color: var(--color-red-500);
+    }
+    .danger:active {
+        background-color: var(--color-red-600);
+    }
+    .danger:disabled {
+        background-color: var(--color-red-400);
     }
 </style>
