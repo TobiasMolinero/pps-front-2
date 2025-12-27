@@ -1,0 +1,1 @@
+export const colorTextWhite = '#f8f8fa'
