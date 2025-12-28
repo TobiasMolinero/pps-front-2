@@ -77,6 +77,7 @@
 
 <div
   bind:this={containerEl}
+  role="presentation"
   class="tooltip-container"
   onmouseenter={showTooltip}
   onmouseleave={hideTooltip}

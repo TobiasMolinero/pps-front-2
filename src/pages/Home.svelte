@@ -1,11 +1,21 @@
 <script lang="ts">
-    import AddStockIcon from "@components/ui/atoms/DynamicIcons/AddStockIcon.svelte";
-    import { colorTextWhite } from "@lib/helpers/constants";
+    import { Input } from "@components/ui";
 
+    let inputValue: string = $state('')
 
+    $effect(() => {
+        console.log(inputValue)
+    })
 </script>
 
 <h1>Inicio</h1>
 
-<AddStockIcon color={"#000"} />
-
+<Input type="text" label="Input tipo texto por defecto" />
+<br>
+<Input type="text" label="Input tipo texto con formato DNI" format="dni" maxLength={10} />
+<br>
+<Input type="text" label="Input tipo texto con formato MONEDA" format="money" maxLength={15} />
+<br>
+<Input type="number" label="Input tipo number" />
+<br>
+<Input type="email" label="Input tipo email" />
