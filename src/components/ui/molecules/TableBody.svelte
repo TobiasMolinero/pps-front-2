@@ -15,7 +15,7 @@
     {#each data as row, i(i)}
         <tr>
             {#each columns as column (column.key)}
-                <td>{row[column.key]}</td>
+                <td>{row[column.key] || '-'}</td>
             {/each}
 
             <td>

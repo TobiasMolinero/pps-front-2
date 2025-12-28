@@ -7,9 +7,11 @@
     columns: Column[]
     data: T[]
     actions: Action[]
+    totalPages: number
+    currentPage: number
   };
   
-  let { columns, data, actions }: Props = $props(); 
+  let { columns, data, actions, totalPages, currentPage}: Props = $props(); 
 </script>
 
 <div class="component-container">
@@ -19,7 +21,7 @@
       <TableBody {columns} {data} {actions} />
     </table>
   </div>
-  <PaginationControls />
+  <PaginationControls {totalPages} {currentPage} />
 </div>
 
 <style>

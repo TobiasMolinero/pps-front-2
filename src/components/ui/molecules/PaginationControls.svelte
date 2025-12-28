@@ -6,13 +6,14 @@
     import iconCaretLeft from "@assets/icons/caret-left-bold.svg";
 
     interface Props {
+        currentPage: number;
         totalPages: number;
     }
 
-    let { totalPages = 10 }: Props = $props();
+    let { totalPages = 10, currentPage }: Props = $props();
     let visiblePages: (number | string)[] = $state([]);
 
-    let actualPage: number = $state(1);
+    let actualPage: number = $derived(currentPage);
 
     const prevPage = () => {
         if (actualPage > 1) actualPage--;
@@ -143,10 +144,5 @@
         justify-content: center;
         column-gap: 0.25rem;
         min-width: 17.5rem;
-    }
-
-    .ellipsis {
-        padding: var(--space-sm) var(--space-md);
-        text-align: center;
     }
 </style>
