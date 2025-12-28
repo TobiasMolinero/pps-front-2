@@ -11,5 +11,6 @@ export interface PropsInput {
     format?: 'money' | 'dni' | ''
     minLength?: number
     maxLength?: number
-    onChange?: (e: Event) => void
+    showToggle?: boolean 
+    onChange?: (e: Event, value: string) => void
 }

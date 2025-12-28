@@ -19,3 +19,5 @@
 <Input type="number" label="Input tipo number" />
 <br>
 <Input type="email" label="Input tipo email" />
+<br>
+<Input type="password" label="Input tipo password" showToggle={true} />
