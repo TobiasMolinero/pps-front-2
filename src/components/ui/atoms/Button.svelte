@@ -7,7 +7,7 @@
         type?: 'button' | 'submit' | 'reset'
         icon?: Snippet | null
         label?: Snippet | null
-        onclick: () => void
+        onclick?: () => void
     }
     
     let {

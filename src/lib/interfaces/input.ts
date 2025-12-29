@@ -1,5 +1,5 @@
 export interface PropsInput {
-    type?: 'text' | 'number' | 'password' | 'email'
+    type: 'text' | 'number' | 'password' | 'email'
     id?: string
     label?: string
     value?: string | number
