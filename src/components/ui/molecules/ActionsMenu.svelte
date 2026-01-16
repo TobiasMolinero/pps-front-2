@@ -35,14 +35,14 @@
 
   const close = () => {
     hideAllTooltips();
-    toggleMenu()
+    toggleMenu();
   };
 
   const checkMenuDirection = () => {
-    if(!menuElement) return;
-    
+    if (!menuElement) return;
+
     const parent = findScrollableParent(menuElement);
-    if(!parent) return;
+    if (!parent) return;
 
     const elementOffsetTop = menuElement.offsetTop;
     const parentScroll = parent.scrollTop;
@@ -50,7 +50,8 @@
 
     const relativeTop = elementOffsetTop - parentScroll;
     const spaceAbove = relativeTop;
-    const spaceBelow = parentVisibleHeight - (relativeTop + menuElement.offsetHeight);
+    const spaceBelow =
+      parentVisibleHeight - (relativeTop + menuElement.offsetHeight);
 
     const estimatedMenuHeight = actions.length * 50 + 10;
 
@@ -58,7 +59,7 @@
       spaceAbove < estimatedMenuHeight && spaceBelow > spaceAbove
         ? "down"
         : "up";
-  }
+  };
 
   const handleAction = (action: Action) => {
     action.onClick();
@@ -68,7 +69,7 @@
   $effect(() => {
     if (!open) return;
 
-    const cleanup = addClickOutsideListener(menuElement, close)
+    const cleanup = addClickOutsideListener(menuElement, close);
     return cleanup;
   });
 </script>
@@ -84,8 +85,8 @@
             type="button"
             class="menu-item"
             class:open
-            style="--delay: {(actions.length - i) * 30}ms;  --reverse-delay: {i *
-              30}ms;"
+            style="--delay: {(actions.length - i) *
+              30}ms;  --reverse-delay: {i * 30}ms;"
             onclick={() => handleAction(action)}
           >
             <Icon src={action.icon} />
@@ -101,7 +102,7 @@
     position: relative;
     display: inline-block;
   }
-  
+
   .menu-list {
     position: absolute;
     left: 50%;
@@ -118,7 +119,7 @@
       transform 200ms ease;
   }
 
-    /* dirección hacia arriba (por defecto) */
+  /* dirección hacia arriba (por defecto) */
   .actions-menu[data-direction="up"] .menu-list {
     bottom: 100%;
     transform: translate(-50%, 0px);
@@ -136,17 +137,17 @@
     pointer-events: auto;
     transform: translate(-50%, 0);
   }
-  
+
   .menu-list.open {
     pointer-events: auto; /* vuelve interactivo */
     transform: translate(-50%, 0);
   }
-  
+
   .menu-list.closing {
     pointer-events: none;
     transform: translate(-50%, 0);
   }
-  
+
   .menu-item {
     display: flex;
     justify-content: center;
@@ -162,16 +163,16 @@
     scale: 0;
     transition: scale 200ms;
   }
-  
+
   .menu-item.open {
     scale: 1;
     transition-delay: var(--delay);
   }
-  
+
   .menu-item.open:hover {
     background: var(--color-slate-950);
   }
-  
+
   .menu-list.closing .menu-item {
     scale: 0;
     transition-delay: var(--reverse-delay);

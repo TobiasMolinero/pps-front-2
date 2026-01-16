@@ -1,17 +1,20 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+    import { formatMoney } from "@lib/formatters";
+    import { Button, PlusIcon } from "@components/ui";
+    import iconStock from '@assets/icons/add-stock.svg';
+    import iconTrash from '@assets/icons/trash-fill.svg';
+    import { products, reloadProducts } from "@features/productos/store";
+    import iconPencil from '@assets/icons/pencil-fill.svg';
+    import { colorTextWhite } from "@lib/helpers/constants";
     import Table from "@components/ui/organisms/Table.svelte";
     import type { Action } from "@lib/interfaces/actionsmenu";
-    import iconTrash from '@assets/icons/trash-fill.svg';
-    import iconPencil from '@assets/icons/pencil-fill.svg';
-    import iconStock from '@assets/icons/add-stock.svg'
-    import { Button, PlusIcon } from "@components/ui";
-    import { colorTextWhite } from "@lib/helpers/constants";
-    import { onMount } from "svelte";
-    import { products } from "@stores/products";
-    import { getProducts } from "@lib/helpers/products";
+    import { deleteProduct, getProducts } from "@features/productos/helpers/products";
+    import FormProduct from "@features/productos/components/FormProduct.svelte";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
+    let formIsOpen: boolean = $state(false);
     
     const columns = [
         {key: 'cod_producto', label: 'Cod. Producto'},
@@ -25,23 +28,49 @@
     const actions: Action[] = [
         {icon: iconStock, label: 'Ingresar stock', onClick: () => console.log('Modificar stock')},
         {icon: iconPencil, label: 'Editar', onClick: () => console.log('Editar registro')},
-        {icon: iconTrash, label: 'Eliminar', onClick: () => console.log('Eliminar registro')},
+        {icon: iconTrash, label: 'Eliminar', onClick: (id: number) => deleteProduct(id)},
     ]
-    
-    onMount(async () => {
-        const res = await getProducts(currentPage);
+
+    const handleForm = () => {
+        formIsOpen = !formIsOpen;
+    }
+
+    const loadingProducts = async (page: number) => {
+        const res = await getProducts(page);
         if(res) {
-            $products = res.data;
+            $products = res.data.map(product => {
+                return {
+                    ...product,
+                    descripcion: product.descripcion || '-',
+                    stock: product.stock || 0,
+                    precio: formatMoney(String(product.precio))
+                }
+            })
             currentPage = res.current_page;
             totalPages = res.total_pages;
         }
+    }
+
+    const handleReload = async () => {
+        await loadingProducts(currentPage);
+        $reloadProducts = false;
+    } 
+
+    $effect(() => {
+        if($reloadProducts) {
+            handleReload();
+        }
+    })
+
+    onMount(async () => {
+        await loadingProducts(currentPage);
     })
 </script>
 
 <h1>Productos</h1>
 <div class="products-menu">
     <div></div>
-    <Button variant="success" onclick={() => console.log('hola')}>
+    <Button variant="success" onclick={handleForm}>
         {#snippet icon()}
             <PlusIcon width={24} height={24} color={colorTextWhite} />  
         {/snippet}
@@ -51,6 +80,11 @@
     </Button>
 </div>
 <Table {columns} data={$products} {actions} {totalPages} {currentPage} />
+
+{#if formIsOpen}
+    <FormProduct onClose={handleForm} />
+{/if}
+
 
 <style>
     .products-menu {

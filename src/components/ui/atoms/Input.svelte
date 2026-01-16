@@ -64,7 +64,7 @@
             maxlength={maxLength}
             {placeholder}
             {disabled}
-            {required}
+            required={required}
             class:error
             oninput={handleInput}
         />
@@ -93,6 +93,7 @@
         font-size: 0.875rem;
         font-weight: 500;
         color: var(--text-black);
+        opacity: 0.7;
     }
 
     .input-container {

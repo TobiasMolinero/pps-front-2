@@ -1,16 +1,34 @@
 <script lang="ts">
-    import { Input, Modal, Button } from "@components/ui";
+    import Select from "@components/ui/atoms/Select.svelte";
+    // import { Input, Modal, Button } from "@components/ui";
 
-    let modalRef = $state<Modal>()
+    // let modalRef = $state<Modal>()
 
-    const openModal = () => {
-        modalRef?.open();
-    }
+    // const openModal = () => {
+    //     modalRef?.open();
+    // }
+
+
+    const categorias = [
+        { id: 1, categoria: "Ferretería" },
+        { id: 2, categoria: "Pinturas" },
+        { id: 3, categoria: "Electricidad" },
+    ];
+
+    let categoriaSeleccionada: number = 0;
 </script>
 
 <h1>Registrar venta</h1>
 <br>
-<Button variant="primary" onclick={openModal}>
+<Select
+    label="Categoría"
+    options={categorias}
+    displayKey="categoria"
+    bind:value={categoriaSeleccionada}
+/>
+
+<p>🧾 ID seleccionado: {categoriaSeleccionada}</p>
+<!-- <Button variant="primary" onclick={openModal}>
     {#snippet label()}
         Abrir modal
     {/snippet}
@@ -21,11 +39,11 @@
             <Input type="text" />
         </form>
     {/snippet}
-</Modal>
-
+</Modal> -->
+<!-- 
 <style>
     form {
         background: red;
         padding: var(--space-4) 
     }
-</style>
+</style> -->

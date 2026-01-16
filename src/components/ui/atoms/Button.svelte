@@ -7,6 +7,7 @@
         type?: 'button' | 'submit' | 'reset'
         icon?: Snippet | null
         label?: Snippet | null
+        form?: string
         onclick?: () => void
     }
     
@@ -16,11 +17,12 @@
         type = 'button',
         icon,
         label,
-        onclick 
+        onclick,
+        form
     }: Props = $props()
 </script>
 
-<button class={`btn ${variant}`} {disabled} type={type} {onclick}>
+<button class={`btn ${variant}`} {disabled} type={type} {onclick} form={form}>
     {@render icon?.()}
     {@render label?.()}
 </button>

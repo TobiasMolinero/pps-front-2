@@ -1,65 +1,41 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-    import { Button, Heading, Icon } from "../atoms";
+    import { Heading, Icon } from "../atoms";
     import crossIcon from '@assets/icons/x-bold.svg';
     import type { ModalProps } from "@lib/interfaces/modal";
+    import { addClickOutsideListener } from "@lib/helpers/clickOutside";
 
     let { 
-        data,
-        content,
         title,
         alignTitle = 'text-start',
-        cancelButton = true,
-        confirmButton = true,
-        confirmLabel = 'Confirmar',
-        cancelLabel = 'Cancelar',
+        modalBody,
+        onClose,
     }: ModalProps = $props();
 
-    let isOpen: boolean = $state(true);
+    let modal: HTMLElement;
 
-    export function open(): void {
-        isOpen = true
-    }
-
-    function close() {
-        isOpen = false
-    }
+    $effect(() => {
+        const cleanup = addClickOutsideListener(modal, onClose);
+        return cleanup;
+    })
 </script>
 
-{#if isOpen}
-    <div
-        transition:fade={{duration: 100}} 
-        class="background"
-    >
-        <div class="modal">
-            <header class="modal-header">
-                <button class="btn-close-modal" onclick={close}>
-                    <Icon src={crossIcon} alt="Icono cruz cerrar" />
-                </button>
-            </header>
-            <div class="modal-body">
-                <Heading level={3} textAlign={alignTitle}>{title}</Heading>
-                {@render content()}
-            </div>
-            <footer class="modal-footer">
-                {#if cancelButton}
-                    <Button variant="secondary" onclick={close}>
-                        {#snippet label()}
-                            {cancelLabel}
-                        {/snippet}
-                    </Button>
-                {/if}
-                {#if confirmButton}
-                    <Button variant="primary">
-                        {#snippet label()}
-                            {confirmLabel}
-                        {/snippet}
-                    </Button>
-                {/if}
-            </footer>
+<div
+    transition:fade={{ duration: 100 }} 
+    class="background"
+>
+    <div class="modal" bind:this={modal}>
+        <header class="modal-header">
+            <button class="btn-close-modal" onclick={onClose}>
+                <Icon src={crossIcon} alt="Icono cruz cerrar" />
+            </button>
+        </header>
+        <div class="modal-body">
+            <Heading level={3} textAlign={alignTitle}>{title}</Heading>
+            {@render modalBody()}
         </div>
     </div>
-{/if}
+</div>
 
 <style>
     .background {
@@ -78,12 +54,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        row-gap: var(--space-2);
+        row-gap: var(--space-4);
         padding: var(--space-md);
         border-radius: var(--radius-sm);
         background: var(--color-slate-100);
         box-shadow: var(--shadow-md);
-        min-width: 400px;
+        min-width: 450px;
+        max-width: 90vw;
     }
 
     .modal-header {
@@ -100,13 +77,10 @@
     }
 
     .modal-body {
-        width: 100%;
-    }
-
-    .modal-footer {
         display: flex;
-        justify-content: center;
-        column-gap: var(--space-sm);
+        flex-direction: column;
+        row-gap: var(--space-2);
+        padding: var(--space-3) 0;
         width: 100%;
     }
 </style>

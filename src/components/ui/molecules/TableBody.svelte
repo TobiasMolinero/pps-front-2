@@ -9,17 +9,24 @@
     };
 
     let { columns, data, actions }: Props = $props();
+
+    function mapActionsWhitId(id: number) {
+        return actions.map(action => ({
+            ...action,
+            onClick: () => action.onClick?.(id)
+        }));
+    }
 </script>
 
 <tbody>
     {#each data as row, i(i)}
         <tr>
             {#each columns as column (column.key)}
-                <td>{row[column.key] || '-'}</td>
+                <td>{row[column.key]}</td>
             {/each}
 
             <td>
-                <ActionsMenu {actions} />
+                <ActionsMenu actions={mapActionsWhitId(row.id)} />
             </td>
         </tr>
     {/each}
