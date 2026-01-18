@@ -2,10 +2,9 @@
     import { onMount } from "svelte";
     import { Button, Input, Modal } from "@components/ui";
     import Select from "@components/ui/atoms/Select.svelte";
-    import { cleanDataProduct, createProduct, getCategories, getOneProduct } from "../helpers/products";
+    import { cleanDataProduct, createProduct, editProduct, getCategories, getOneProduct } from "../helpers/products";
     import { productsCategories, reloadProducts } from "../store";
     import { createProductForm } from "../helpers/productForm";
-    import type { ProductForm } from "../interfaces/interfaces";
 
     interface Props {
         productID: number
@@ -28,11 +27,7 @@
         onClose();
         $reloadProducts = true;
     }
-
-    const handleEditSubmit = async (e: Event) => {
-        e.preventDefault();
-    }
-
+    
     const getDataProduct = async (id: number) => {
         const res = await getOneProduct(id);
         if(res) {
@@ -45,6 +40,18 @@
             $productForm.stock = data[0].stock || '';
             $productForm.descripcion = data[0].descripcion || '';
         }
+    }
+
+    const handleEditSubmit = async (e: Event) => {
+        e.preventDefault();
+        const modifiedProduct = cleanDataProduct($productForm);
+        const res = await editProduct(productID, modifiedProduct);
+
+        if(!res) return;
+
+        alert('El producto se modificó con exito');
+        onClose();
+        $reloadProducts = true;
     }
 
     onMount(async() => {

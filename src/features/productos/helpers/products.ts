@@ -18,6 +18,11 @@ export async function createProduct(newProduct: ProductForm) {
     return response;
 }
 
+export async function editProduct(id: number, modifiedProduct: ProductForm) {
+    const response = await safeApiRequest<void>('patch', `${apiRoutes.root_products}/${id}`, modifiedProduct);
+    return response;
+}
+
 export async function deleteProduct(id: number) {
     const response = await safeApiRequest<void>('delete', `${apiRoutes.root_products}/${id}`);
     return response;
