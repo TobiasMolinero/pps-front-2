@@ -1,8 +1,7 @@
 import { apiRoutes } from "@lib/api/endpoints";
-import type { ProductForm, ResponseGetAllCategories, ResponseGetAllProducts } from "@features/productos/interfaces/interfaces";
+import type { ProductForm, ResponseGetAllCategories, ResponseGetAllProducts, ResponseGetOneProduct } from "@features/productos/interfaces/interfaces";
 import { cleanFormatMoney } from "@lib/formatters";
 import { safeApiRequest } from "@lib/api/safeApiRequest";
-import { reloadProducts } from "../store";
 
 export async function getProducts(page: number) {
     const response = await safeApiRequest<ResponseGetAllProducts>('get', `${apiRoutes.all_products}${page}`);
@@ -10,7 +9,7 @@ export async function getProducts(page: number) {
 }
 
 export async function getOneProduct(id: number) {
-    const response = await safeApiRequest<ProductForm>('get', `${apiRoutes.root_products}/${id}`); 
+    const response = await safeApiRequest<ResponseGetOneProduct>('get', `${apiRoutes.root_products}/${id}`); 
     return response;
 }
 
@@ -21,11 +20,7 @@ export async function createProduct(newProduct: ProductForm) {
 
 export async function deleteProduct(id: number) {
     const response = await safeApiRequest<void>('delete', `${apiRoutes.root_products}/${id}`);
-    
-    if(!response) return;
-
-    alert('El producto fue eliminado correctamente.');
-    reloadProducts.set(true);
+    return response;
 }
 
 export async function getCategories() {

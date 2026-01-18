@@ -15,6 +15,8 @@
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
     let formIsOpen: boolean = $state(false);
+    let formIsEdit: boolean = $state(false);
+    let productID: number = $state(0);
     
     const columns = [
         {key: 'cod_producto', label: 'Cod. Producto'},
@@ -27,8 +29,8 @@
     
     const actions: Action[] = [
         {icon: iconStock, label: 'Ingresar stock', onClick: () => console.log('Modificar stock')},
-        {icon: iconPencil, label: 'Editar', onClick: () => console.log('Editar registro')},
-        {icon: iconTrash, label: 'Eliminar', onClick: (id: number) => deleteProduct(id)},
+        {icon: iconPencil, label: 'Editar', onClick: (id: number) => handleFormEdit(id)},
+        {icon: iconTrash, label: 'Eliminar', onClick: (id: number) => handleDelete(id)},
     ]
 
     const handleForm = () => {
@@ -49,6 +51,26 @@
             currentPage = res.current_page;
             totalPages = res.total_pages;
         }
+    }
+
+    const handleDelete = async (id: number) => {
+        const res = await deleteProduct(id);
+
+        if(!res) return;
+
+        alert('El producto fue eliminado correctamente.');
+
+        if($products.length === 1 && currentPage > 1) {
+            currentPage--;
+        }
+
+        await handleReload()
+    }
+
+    const handleFormEdit = (id: number) => {
+        productID = id;
+        formIsEdit = true;
+        handleForm();
     }
 
     const handleReload = async () => {
@@ -79,10 +101,10 @@
         {/snippet}
     </Button>
 </div>
-<Table {columns} data={$products} {actions} {totalPages} {currentPage} />
+<Table {columns} data={$products} {actions} {totalPages} {currentPage} onClick={(page: number) => loadingProducts(page)} />
 
 {#if formIsOpen}
-    <FormProduct onClose={handleForm} />
+    <FormProduct isEditMode={formIsEdit} onClose={handleForm} {productID} />
 {/if}
 
 

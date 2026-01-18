@@ -9,9 +9,10 @@
     actions: Action[]
     totalPages: number
     currentPage: number
+    onClick: (page: number) => void
   };
   
-  let { columns, data, actions, totalPages, currentPage}: Props = $props(); 
+  let { columns, data, actions, totalPages, currentPage, onClick }: Props = $props(); 
 </script>
 
 <div class="component-container">
@@ -21,7 +22,7 @@
       <TableBody {columns} {data} {actions} />
     </table>
   </div>
-  <PaginationControls {totalPages} {currentPage} />
+  <PaginationControls {totalPages} {currentPage} {onClick} />
 </div>
 
 <style>

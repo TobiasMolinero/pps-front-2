@@ -16,6 +16,10 @@ export interface ResponseGetAllProducts {
     total_items: number
 }
 
+export interface ResponseGetOneProduct {
+    data: Product[]
+}
+
 export interface ProductCategory {
     [key: string]: string | number | boolean
     id: number

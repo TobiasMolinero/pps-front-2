@@ -8,31 +8,37 @@
     interface Props {
         currentPage: number;
         totalPages: number;
+        onClick: (page: number) => void;
     }
 
-    let { totalPages = 10, currentPage }: Props = $props();
+    let { totalPages = 10, currentPage, onClick }: Props = $props();
     let visiblePages: (number | string)[] = $state([]);
 
     let actualPage: number = $derived(currentPage);
 
     const prevPage = () => {
         if (actualPage > 1) actualPage--;
+        onClick(actualPage);
     };
 
     const nextPage = () => {
         if (actualPage < totalPages) actualPage++;
+        onClick(actualPage);
     };
 
     const firstPage = () => {
         actualPage = 1;
+        onClick(actualPage);
     };
 
     const lastPage = () => {
         actualPage = totalPages;
+        onClick(actualPage);
     };
 
     const selectPage = (selectedPage: number) => {
         actualPage = selectedPage;
+        onClick(actualPage);
     };
 
 
@@ -82,19 +88,15 @@
 
     <div class="pages">
         {#each visiblePages as page}
-            <!-- {#if page === "..."}
-                <span class="ellipsis">...</span>
-            {:else} -->
                 <Button
                     variant={page === actualPage ? "primary" : "secondary"}
-                    disabled={page === '...'}
+                    disabled={page === '...' || page === actualPage}
                     onclick={() => selectPage(page as number)}
                 >
                     {#snippet label()}
                         {page}
                     {/snippet}
                 </Button>
-            <!-- {/if} -->
         {/each}
     </div>
 

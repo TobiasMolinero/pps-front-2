@@ -2,20 +2,22 @@
     import { onMount } from "svelte";
     import { Button, Input, Modal } from "@components/ui";
     import Select from "@components/ui/atoms/Select.svelte";
-    import { cleanDataProduct, createProduct, getCategories } from "../helpers/products";
+    import { cleanDataProduct, createProduct, getCategories, getOneProduct } from "../helpers/products";
     import { productsCategories, reloadProducts } from "../store";
     import { createProductForm } from "../helpers/productForm";
+    import type { ProductForm } from "../interfaces/interfaces";
 
     interface Props {
+        productID: number
         isEditMode?: boolean
         onClose: () => void
     }
 
-    let { isEditMode = false, onClose }: Props = $props();
+    let { isEditMode = false, onClose, productID = 0 }: Props = $props();
     
     const { productForm } = createProductForm();
 
-    const handleSubmit = async (e: Event) => {
+    const handleCreateSubmit = async (e: Event) => {
         e.preventDefault();
         const newProduct = cleanDataProduct($productForm);
         const res = await createProduct(newProduct);
@@ -27,17 +29,40 @@
         $reloadProducts = true;
     }
 
+    const handleEditSubmit = async (e: Event) => {
+        e.preventDefault();
+    }
+
+    const getDataProduct = async (id: number) => {
+        const res = await getOneProduct(id);
+        if(res) {
+            const data = res.data;
+
+            $productForm.cod_producto = data[0].cod_producto;
+            $productForm.nombre_producto = data[0].nombre_producto;
+            $productForm.id_categoria_producto = data[0].id_categoria_producto;
+            $productForm.precio = data[0].precio || '';
+            $productForm.stock = data[0].stock || '';
+            $productForm.descripcion = data[0].descripcion || '';
+        }
+    }
+
     onMount(async() => {
         const res = await getCategories();
         if(res) {
             $productsCategories = res.data;
+        }
+        
+        console.log(productID)
+        if(productID) {
+            await getDataProduct(productID);
         }
     })
 </script>
 
 <Modal title={isEditMode ? 'Editar producto' : 'Registrar producto'} alignTitle="text-center" onClose={onClose}>
     {#snippet modalBody()}
-        <form class="form" onsubmit={handleSubmit}>
+        <form class="form" onsubmit={isEditMode ? handleEditSubmit : handleCreateSubmit}>
             <div class="form-inputs">
                 <Input bind:value={$productForm.cod_producto} type="text" label="Cod. de producto *" required={true} />
                 <Input bind:value={$productForm.nombre_producto} type="text" label="Nombre de producto *" required={true} />
