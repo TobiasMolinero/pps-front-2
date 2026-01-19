@@ -11,11 +11,13 @@
     import type { Action } from "@lib/interfaces/actionsmenu";
     import { deleteProduct, getProducts } from "@features/productos/helpers/products";
     import FormProduct from "@features/productos/components/FormProduct.svelte";
+    import FormAddStock from "@features/productos/components/FormAddStock.svelte";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
-    let formIsOpen: boolean = $state(false);
-    let formIsEdit: boolean = $state(false);
+    let formStockIsOpen: boolean = $state(false);
+    let formProductIsOpen: boolean = $state(false);
+    let formProductIsEdit: boolean = $state(false);
     let productID: number = $state(0);
     
     const columns = [
@@ -28,13 +30,22 @@
     ]
     
     const actions: Action[] = [
-        {icon: iconStock, label: 'Ingresar stock', onClick: () => console.log('Modificar stock')},
+        {icon: iconStock, label: 'Ingresar stock', onClick: (id: number) => handleStockForm(id)},
         {icon: iconPencil, label: 'Editar', onClick: (id: number) => handleFormEdit(id)},
         {icon: iconTrash, label: 'Eliminar', onClick: (id: number) => handleDelete(id)},
     ]
 
-    const handleForm = () => {
-        formIsOpen = !formIsOpen;
+    const handleProductForm = () => {
+        formProductIsOpen = !formProductIsOpen;
+        if(formProductIsEdit) {
+            formProductIsEdit = false;
+            productID = 0;
+        }
+    }
+
+    const handleStockForm = (id: number) => {
+        formStockIsOpen = !formStockIsOpen;
+        productID = id;
     }
 
     const loadingProducts = async (page: number) => {
@@ -69,8 +80,8 @@
 
     const handleFormEdit = (id: number) => {
         productID = id;
-        formIsEdit = true;
-        handleForm();
+        formProductIsEdit = true;
+        formProductIsOpen = true;
     }
 
     const handleReload = async () => {
@@ -92,7 +103,7 @@
 <h1>Productos</h1>
 <div class="products-menu">
     <div></div>
-    <Button variant="success" onclick={handleForm}>
+    <Button variant="success" onclick={handleProductForm}>
         {#snippet icon()}
             <PlusIcon width={24} height={24} color={colorTextWhite} />  
         {/snippet}
@@ -103,8 +114,12 @@
 </div>
 <Table {columns} data={$products} {actions} {totalPages} {currentPage} onClick={(page: number) => loadingProducts(page)} />
 
-{#if formIsOpen}
-    <FormProduct isEditMode={formIsEdit} onClose={handleForm} {productID} />
+{#if formProductIsOpen}
+    <FormProduct isEditMode={formProductIsEdit} onClose={handleProductForm} {productID} />
+{/if}
+
+{#if formStockIsOpen}
+    <FormAddStock onClose={handleStockForm} {productID} />
 {/if}
 
 

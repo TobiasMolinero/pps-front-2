@@ -1,5 +1,4 @@
 export const apiRoutes = {
-    root_products: '/productos',
-    all_products: '/productos?page=',
+    products: '/productos',
     all_categories: '/categorias-productos/',
 }

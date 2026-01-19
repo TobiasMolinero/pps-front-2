@@ -4,27 +4,32 @@ import { cleanFormatMoney } from "@lib/formatters";
 import { safeApiRequest } from "@lib/api/safeApiRequest";
 
 export async function getProducts(page: number) {
-    const response = await safeApiRequest<ResponseGetAllProducts>('get', `${apiRoutes.all_products}${page}`);
+    const response = await safeApiRequest<ResponseGetAllProducts>('get', `${apiRoutes.products}?page=${page}`);
     return response;
 }
 
 export async function getOneProduct(id: number) {
-    const response = await safeApiRequest<ResponseGetOneProduct>('get', `${apiRoutes.root_products}/${id}`); 
+    const response = await safeApiRequest<ResponseGetOneProduct>('get', `${apiRoutes.products}/${id}`); 
     return response;
 }
 
 export async function createProduct(newProduct: ProductForm) {
-    const response = await safeApiRequest<void>('post', apiRoutes.root_products, newProduct);
+    const response = await safeApiRequest<void>('post', apiRoutes.products, newProduct);
     return response;
 }
 
 export async function editProduct(id: number, modifiedProduct: ProductForm) {
-    const response = await safeApiRequest<void>('patch', `${apiRoutes.root_products}/${id}`, modifiedProduct);
+    const response = await safeApiRequest<void>('patch', `${apiRoutes.products}/${id}`, modifiedProduct);
     return response;
 }
 
 export async function deleteProduct(id: number) {
-    const response = await safeApiRequest<void>('delete', `${apiRoutes.root_products}/${id}`);
+    const response = await safeApiRequest<void>('delete', `${apiRoutes.products}/${id}`);
+    return response;
+}
+
+export async function addStock(id: number, data: any) {
+    const response = await safeApiRequest<void>('patch', `${apiRoutes.products}/add-stock/${id}`, data);
     return response;
 }
 
