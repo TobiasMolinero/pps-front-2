@@ -11,6 +11,7 @@
         error = "",
         displayKey = "label",
         valueKey = "id",
+        width
     }: PropsSelect = $props();
 </script>
 
@@ -19,13 +20,7 @@
         <label for={id} class="input-label">{label}</label>
     {/if}
 
-    <select
-        id={id}
-        class="select-native"
-        bind:value={value}
-        disabled={disabled}
-        required={required}
-    >
+    <select {id} class="select-native" bind:value {disabled} {required} style={`width: ${width}`}>
         {#each options as option (option[valueKey])}
             <option value={option[valueKey]}>
                 {option[displayKey]}
@@ -55,6 +50,7 @@
 
     .select-native {
         width: 100%;
+        height: 40px;
         padding: 0.5rem 0.75rem;
         font-size: 1rem;
         border: 1px solid var(--color-slate-400);

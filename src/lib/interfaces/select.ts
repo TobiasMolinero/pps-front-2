@@ -6,6 +6,7 @@ export interface PropsSelect {
     disabled?: boolean;
     required?: boolean;
     error?: string;
+    width?: string;
     displayKey?: string; // qué campo se muestra
     valueKey?: string;   // qué campo se usa como valor
 }

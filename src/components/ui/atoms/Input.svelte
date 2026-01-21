@@ -64,7 +64,7 @@
             maxlength={maxLength}
             {placeholder}
             {disabled}
-            required={required}
+            {required}
             class:error
             oninput={handleInput}
         />
@@ -101,6 +101,7 @@
     }
 
     .input-field {
+        height: 40px;
         width: 100%;
         padding: 0.5rem 0.75rem;
         border: 1px solid var(--color-slate-400);

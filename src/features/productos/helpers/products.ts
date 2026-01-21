@@ -3,8 +3,23 @@ import type { ProductForm, ResponseGetAllCategories, ResponseGetAllProducts, Res
 import { cleanFormatMoney } from "@lib/formatters";
 import { safeApiRequest } from "@lib/api/safeApiRequest";
 
-export async function getProducts(page: number) {
-    const response = await safeApiRequest<ResponseGetAllProducts>('get', `${apiRoutes.products}?page=${page}`);
+export async function getProducts(
+    page: number, 
+    filters: { search?: string; category?: number } = {}
+) {
+    const params = new URLSearchParams();
+
+    params.append("page", String(page));
+
+    if(filters.search && filters.search.trim() !== "") {
+        params.append("search", filters.search.trim());
+    }
+
+    if(filters.category && filters.category !== 0) {
+        params.append("category", String(filters.category));
+    }
+
+    const response = await safeApiRequest<ResponseGetAllProducts>('get', `${apiRoutes.products}?${params.toString()}`);
     return response;
 }
 

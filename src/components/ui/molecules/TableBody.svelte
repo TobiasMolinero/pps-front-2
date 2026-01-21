@@ -8,7 +8,7 @@
         actions: any[]
     };
 
-    let { columns, data, actions }: Props = $props();
+    let { columns, data = [], actions }: Props = $props();
 
     function mapActionsWhitId(id: number) {
         return actions.map(action => ({
@@ -19,17 +19,25 @@
 </script>
 
 <tbody>
-    {#each data as row, i(i)}
-        <tr>
-            {#each columns as column (column.key)}
-                <td>{row[column.key]}</td>
-            {/each}
+    {#if data.length}
+        {#each data as row, i(i)}
+            <tr>
+                {#each columns as column (column.key)}
+                    <td>{row[column.key]}</td>
+                {/each}
 
-            <td>
-                <ActionsMenu actions={mapActionsWhitId(row.id)} />
+                <td>
+                    <ActionsMenu actions={mapActionsWhitId(row.id)} />
+                </td>
+            </tr>
+        {/each}
+    {:else}
+        <tr>
+            <td colspan={columns.length}>
+                <p class="not-found-text">No se encontraron resultados</p>
             </td>
         </tr>
-    {/each}
+    {/if}
 </tbody>
 
 <style>
@@ -39,5 +47,9 @@
 
     tbody tr:not(:last-child) {
         border-bottom: 1px solid var(--color-slate-300);
+    }
+
+    .not-found-text {
+        color: var(--color-slate-600);
     }
 </style>

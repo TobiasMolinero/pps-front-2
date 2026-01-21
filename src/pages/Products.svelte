@@ -1,17 +1,18 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { formatMoney } from "@lib/formatters";
-    import { Button, PlusIcon } from "@components/ui";
+    import { Button, Heading, PlusIcon } from "@components/ui";
     import iconStock from '@assets/icons/add-stock.svg';
     import iconTrash from '@assets/icons/trash-fill.svg';
-    import { products, reloadProducts } from "@features/productos/store";
+    import { products, productsCategories, reloadProducts } from "@features/productos/store";
     import iconPencil from '@assets/icons/pencil-fill.svg';
     import { colorTextWhite } from "@lib/helpers/constants";
     import Table from "@components/ui/organisms/Table.svelte";
     import type { Action } from "@lib/interfaces/actionsmenu";
-    import { deleteProduct, getProducts } from "@features/productos/helpers/products";
+    import { deleteProduct, getCategories, getProducts } from "@features/productos/helpers/products";
     import FormProduct from "@features/productos/components/FormProduct.svelte";
     import FormAddStock from "@features/productos/components/FormAddStock.svelte";
+    import FilterOptions from "@features/productos/components/FilterOptions.svelte";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
@@ -64,6 +65,35 @@
         }
     }
 
+    const handleFilter = async ({ 
+        inputValue,
+        selectValue 
+    }: { inputValue: string; selectValue: number}
+    ) => {
+        const res = await getProducts(currentPage, {
+            search: inputValue,
+            category: selectValue
+        })
+
+        if(res) {
+            $products = res.data.map(product => ({
+                ...product,
+                descripcion: product.descripcion || '-',
+                stock: product.stock || 0,
+                precio: formatMoney(String(product.precio))
+            }));
+            currentPage = res.current_page;
+            totalPages = res.total_pages;
+        }
+    }
+
+    const loadingCategories = async () => {
+        const res = await getCategories();
+        if (res) {
+            $productsCategories = res.data;
+        }
+    }
+
     const handleDelete = async (id: number) => {
         const res = await deleteProduct(id);
 
@@ -97,12 +127,19 @@
 
     onMount(async () => {
         await loadingProducts(currentPage);
+        await loadingCategories();
     })
 </script>
 
-<h1>Productos</h1>
+<div class="title-container">
+    <Heading level={2} textAlign="text-start">
+        {#snippet children()}
+            Productos
+        {/snippet}
+    </Heading>
+</div>
 <div class="products-menu">
-    <div></div>
+    <FilterOptions options={$productsCategories} onFilter={handleFilter} />
     <Button variant="success" onclick={handleProductForm}>
         {#snippet icon()}
             <PlusIcon width={24} height={24} color={colorTextWhite} />  
@@ -112,7 +149,14 @@
         {/snippet}
     </Button>
 </div>
-<Table {columns} data={$products} {actions} {totalPages} {currentPage} onClick={(page: number) => loadingProducts(page)} />
+<Table 
+    {columns}
+    data={$products}
+    {actions}
+    {currentPage}
+    {totalPages}
+    onClick={(page: number) => loadingProducts(page)}
+/>
 
 {#if formProductIsOpen}
     <FormProduct isEditMode={formProductIsEdit} onClose={handleProductForm} {productID} />
@@ -124,9 +168,14 @@
 
 
 <style>
+    .title-container {
+        padding: 0 var(--space-2);
+    }
+    
     .products-menu {
         display: flex;
         justify-content: space-between;
+        align-items: end;
         padding: var(--space-4);
     }
 </style>

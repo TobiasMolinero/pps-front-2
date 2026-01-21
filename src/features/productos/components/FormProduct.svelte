@@ -61,12 +61,13 @@
     };
 
     onMount(async () => {
-        const res = await getCategories();
-        if (res) {
-            $productsCategories = res.data;
+        if(!$productsCategories.length) {
+            const res = await getCategories();
+            if (res) {
+                $productsCategories = res.data;
+            }
         }
 
-        console.log(productID);
         if (productID) {
             await getDataProduct(productID);
         }
