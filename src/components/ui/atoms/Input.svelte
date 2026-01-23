@@ -133,6 +133,7 @@
         border: none;
         cursor: pointer;
         padding: 0;
+        opacity: 0.6;
     }
     .toggle-btn:hover {
         opacity: 0.8;
