@@ -1,6 +1,6 @@
 <script lang="ts">
   import { tick, type Snippet } from "svelte";
-  import { listenHideAllTooltips } from "@lib/helpers/tooltipEvents";
+  import { listenHideAllTooltips } from "@lib/utils/tooltipEvents";
 
   type Position = "top" | "bottom" | "left" | "right";
 

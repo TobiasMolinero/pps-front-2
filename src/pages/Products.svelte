@@ -6,7 +6,7 @@
     import iconTrash from '@assets/icons/trash-fill.svg';
     import { products, productsCategories, reloadProducts } from "@features/productos/store";
     import iconPencil from '@assets/icons/pencil-fill.svg';
-    import { colorTextWhite } from "@lib/helpers/constants";
+    import { colorTextWhite } from "@lib/utils/constants";
     import Table from "@components/ui/organisms/Table.svelte";
     import type { Action } from "@lib/interfaces/actionsmenu";
     import { deleteProduct, getCategories, getProducts } from "@features/productos/helpers/products";

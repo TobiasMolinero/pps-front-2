@@ -72,27 +72,6 @@
         width: 100%;
     }
 
-    .input-password {
-        display: flex;
-        flex-direction: column;
-        row-gap: var(--space-2);
-    }
-
-    .forgot-button {
-        background: none;
-        border: none;
-        align-self: end;
-        cursor: pointer;
-        text-decoration: underline;
-        opacity: 0.8;
-    }
-    .forgot-button:hover {
-        opacity: 1;
-    }
-    .forgot-button:active {
-        opacity: 0.8;
-    }
-
     .form-button {
         width: 100%;
         display: flex;

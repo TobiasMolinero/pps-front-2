@@ -2,7 +2,6 @@
     import { Button, Heading, Input } from "@components/ui";
     import logo from '@assets/images/herramientas.webp';
 
-
     const handleSubmit = (e: Event) => {
         e.preventDefault();
     }

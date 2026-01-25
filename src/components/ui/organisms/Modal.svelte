@@ -3,7 +3,7 @@
     import { Heading, Icon } from "../atoms";
     import crossIcon from '@assets/icons/x-bold.svg';
     import type { ModalProps } from "@lib/interfaces/modal";
-    import { addClickOutsideListener } from "@lib/helpers/clickOutside";
+    import { addClickOutsideListener } from "@lib/utils/clickOutside";
 
     let { 
         title,

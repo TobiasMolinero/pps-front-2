@@ -2,10 +2,10 @@
   import Icon from "../atoms/Icon.svelte";
   import { ToggleMenu } from "../atoms";
   import type { Action } from "@lib/interfaces/actionsmenu";
-  import { addClickOutsideListener } from "@lib/helpers/clickOutside";
+  import { addClickOutsideListener } from "@lib/utils/clickOutside";
   import Tooltip from "../atoms/Tooltip.svelte";
-  import { hideAllTooltips } from "@lib/helpers/tooltipEvents";
-  import { findScrollableParent } from "@lib/helpers/findScrollableParent";
+  import { hideAllTooltips } from "@lib/utils/tooltipEvents";
+  import { findScrollableParent } from "@lib/utils/findScrollableParent";
 
   interface Props {
     actions: Action[];

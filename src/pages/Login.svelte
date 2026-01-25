@@ -1,12 +1,36 @@
 <script lang="ts">
     import { Button, Heading, Input } from "@components/ui";
-    import logo from '@assets/images/herramientas.webp';
+    import logo from "@assets/images/herramientas.webp";
+    import { apiRoutes } from "@lib/api/endpoints";
+    import { safeApiRequest } from "@lib/api/safeApiRequest";
+    import type { LoginResponse } from "@features/auth/interfaces/interfaces";
+    import { push } from "svelte-spa-router";
+    import { isAuthenticated, isLoadingAuth, user } from "@lib/utils/auth";
+
+    let userValue: string = $state('');
+    let passwordValue: string = $state('');
+
+    const handleSubmit = async (e: Event) => {
+        e.preventDefault();
+        const res = await safeApiRequest<LoginResponse>('post', apiRoutes.login, {
+            usuario: userValue,
+            contraseña: passwordValue
+        })
+
+        if(!res) return
+
+        $user = res.data;
+        $isAuthenticated = true
+        $isLoadingAuth = false
+        push('/dashboard')
+        alert('Iniciaste sesión con exito')
+    }
 </script>
 
 <div class="login-section">
     <div class="hero-content">
         <div class="hero-primary">
-            <img class="hero-img" src={logo} alt="Logo de Management Tool's">
+            <img class="hero-img" src={logo} alt="Logo de Management Tool's" />
             <h1 class="hero-title">Management Tools</h1>
         </div>
         <div class="hero-secondary">
@@ -20,9 +44,10 @@
                 Iniciar sesión
             {/snippet}
         </Heading>
-        <form class="form">
+        <form class="form" onsubmit={handleSubmit}>
             <div class="form-inputs">
                 <Input
+                    bind:value={userValue}
                     label="Usuario *"
                     type="text"
                     required={true}
@@ -31,18 +56,22 @@
                 />
                 <div class="input-password">
                     <Input
+                        bind:value={passwordValue}
                         label="Contraseña *"
                         type="password"
                         required={true}
                         id="txtContraseña"
                         showToggle={true}
                     />
-                    <button type="button" class="forgot-button"
-                        >¿Olvidaste tu contraseña?</button
+                    <button 
+                        type="button"
+                        class="forgot-button"
                     >
+                        ¿Olvidaste tu contraseña?
+                    </button>
                 </div>
             </div>
-            <div class="form-button">
+                    <div class="form-button">
                 <div class="form-info">
                     <small>* Campos obligatorios</small>
                 </div>
@@ -68,7 +97,7 @@
         flex-direction: column;
         row-gap: var(--space-4);
         background-color: var(--dark-blue);
-        padding: 8rem var(--space-8); 
+        padding: 8rem var(--space-8);
     }
 
     .hero-primary {
@@ -77,7 +106,9 @@
         column-gap: var(--space-6);
     }
 
-    .hero-title, .hero-description, .hero-legend {
+    .hero-title,
+    .hero-description,
+    .hero-legend {
         color: var(--text-white);
     }
 
@@ -93,7 +124,7 @@
         width: 180px;
         height: 180px;
     }
-    
+
     .container-login {
         flex: 1;
         display: flex;

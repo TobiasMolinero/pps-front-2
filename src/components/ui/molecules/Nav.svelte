@@ -34,6 +34,7 @@
 
 <style>
     nav {
+        flex: 1;
         padding: var(--space-md) var(--space-sm);
         background-color: var(--color-slate-900);
         display: flex;
