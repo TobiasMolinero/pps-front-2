@@ -9,7 +9,7 @@
     import { location } from 'svelte-spa-router';
 
     const navOptions = [
-        { src: iconHome, label: 'Inicio', route: '/' },
+        { src: iconHome, label: 'Inicio', route: '/dashboard' },
         { src: iconNewSell, label: 'Registrar venta', route: '/registrar-venta' },
         { src: iconSells, label: 'Ventas', route: '/ventas' },
         { src: iconNotaCredito, label: 'Notas crédito', route: '/notas-credito' },

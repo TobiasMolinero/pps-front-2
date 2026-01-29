@@ -2,39 +2,49 @@
     import { Button, Input, Modal } from "@components/ui";
     import { addStock } from "../helpers/products";
     import { reloadProducts } from "../store";
+    import { alert_error, loading, success } from "@lib/utils/alerts";
 
     interface Props {
-        productID: number
-        onClose: (id: number) => void
+        productID: number;
+        onClose: (id: number) => void;
     }
 
     let { productID, onClose }: Props = $props();
-    
-    let qantity: string = $state('');
+
+    let qantity: string = $state("");
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
+        loading.fire();
 
-        if(Number(qantity) <= 0) {
-            alert('La cantidad ingresada debe ser mayor a 0')
+        if (Number(qantity) <= 0) {
+            alert_error.fire({ text: 'La cantidad ingresada debe ser mayor a 0' })
             return;
         }
 
-        const res = addStock(productID, {cantidad: qantity});
-        
-        if(!res) return;
+        const res = await addStock(productID, { cantidad: qantity });
 
-        alert('Se registró el ingreso de stock con éxito');
+        if (!res.ok) {
+            alert_error.fire({ text: res.message });
+            return;
+        }
+
+        success.fire({ text: 'Se registró el ingreso de stock con éxito' });
         $reloadProducts = true;
         onClose(0);
-    }
+    };
 </script>
 
 <Modal title="Añadir stock" alignTitle="text-center" onClose={() => onClose(0)}>
     {#snippet modalBody()}
         <form class="form" onsubmit={handleSubmit}>
             <div class="form-inputs">
-                <Input bind:value={qantity} type="number" label="Cantidad a ingresar *" required={true} />
+                <Input
+                    bind:value={qantity}
+                    type="number"
+                    label="Cantidad a ingresar *"
+                    required={true}
+                />
             </div>
             <div class="form-info">
                 <small>* Campos obligatorios</small>

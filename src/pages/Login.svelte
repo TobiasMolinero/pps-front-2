@@ -4,26 +4,40 @@
     import { apiRoutes } from "@lib/api/endpoints";
     import { safeApiRequest } from "@lib/api/safeApiRequest";
     import type { LoginResponse } from "@features/auth/interfaces/interfaces";
-    import { push } from "svelte-spa-router";
+    import { push, location } from "svelte-spa-router";
     import { isAuthenticated, isLoadingAuth, user } from "@lib/utils/auth";
+    import { alert_error, loading, success } from "@lib/utils/alerts";
 
     let userValue: string = $state('');
     let passwordValue: string = $state('');
+    let userError: string = $state('');
+    let passwordError: string = $state('');
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
+        loading.fire();
+
         const res = await safeApiRequest<LoginResponse>('post', apiRoutes.login, {
             usuario: userValue,
             contraseña: passwordValue
         })
 
-        if(!res) return
+        if(!res.ok) {
+            if(res.error.code === 'NO_USER') userError = res.message;
+            if(res.error.code === 'INVALID_PASSWORD') passwordError = res.message;
+            alert_error.fire({ text: res.message });
+            return
+        }
 
-        $user = res.data;
+        $user = res.data.data;
         $isAuthenticated = true
         $isLoadingAuth = false
+        success.fire({ text: '¡Iniciaste sesión con exito!' })
         push('/dashboard')
-        alert('Iniciaste sesión con exito')
+    }
+
+    const navToForgottenPassword = () => {
+        push('/forgot-password');
     }
 </script>
 
@@ -52,7 +66,7 @@
                     type="text"
                     required={true}
                     id="txtUsuario"
-                    error=""
+                    error={userError}
                 />
                 <div class="input-password">
                     <Input
@@ -62,8 +76,10 @@
                         required={true}
                         id="txtContraseña"
                         showToggle={true}
+                        error={passwordError}
                     />
                     <button 
+                        onclick={navToForgottenPassword}
                         type="button"
                         class="forgot-button"
                     >
@@ -71,7 +87,7 @@
                     </button>
                 </div>
             </div>
-                    <div class="form-button">
+            <div class="form-button">
                 <div class="form-info">
                     <small>* Campos obligatorios</small>
                 </div>

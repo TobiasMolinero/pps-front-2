@@ -5,7 +5,7 @@ import ResetPassword from "../pages/ResetPassword.svelte";
 
 export const publicRoutes = {
     '/login': Login,
-    '/register': Register,
+    '/registrar': Register,
     '/forgot-password': ForgotPassword,
     '/reset-password': ResetPassword 
 }

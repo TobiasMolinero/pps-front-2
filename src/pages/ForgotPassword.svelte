@@ -2,13 +2,29 @@
     import { Button, Heading, Input } from "@components/ui";
     import logo from '@assets/images/herramientas.webp';
     import { push } from "svelte-spa-router";
+    import { safeApiRequest } from "@lib/api/safeApiRequest";
+    import { apiRoutes } from "@lib/api/endpoints";
+    import { alert_error, loading, info } from "@lib/utils/alerts";
 
     let inputValue: string = $state('');
+    let inputError: string = $state('');
     let isSubmit: boolean = $state(false);
 
-    const handleSubmit = (e: Event) => {
+    const handleSubmit = async(e: Event) => {
         e.preventDefault();
-        console.log(inputValue);
+        loading.fire();
+
+        const res = await safeApiRequest<any>('post', apiRoutes.forgot_password, {
+            correo: inputValue
+        })
+
+        if(!res.ok) {
+            if(res.error.code === 'NOT_FOUND') inputError = res.error.message;
+            alert_error.fire({ text: res.message });
+            return;
+        }
+
+        info.fire({ text: res.data.message })
         isSubmit = true;
     }
 
@@ -57,7 +73,7 @@
                             type="email"
                             required={true}
                             id="txtCorreo"
-                            error=""
+                            error={inputError}
                         />
                     </div>
                     <div class="form-button">

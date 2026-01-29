@@ -1,18 +1,31 @@
 <script lang="ts">
     import iconLogout from '@assets/icons/logout.svg';
     import { Nav } from "../molecules";
-    import { user } from '@lib/utils/auth';
+    import { isAuthenticated, user } from '@lib/utils/auth';
+    import { safeApiRequest } from '@lib/api/safeApiRequest';
+    import { apiRoutes } from '@lib/api/endpoints';
+    import { push } from 'svelte-spa-router';
+    import { alert_error, success } from '@lib/utils/alerts';
 
-    console.log($user)
     const handleLogout = async () => {
+        const res = await safeApiRequest('patch', apiRoutes.logout + 1);
 
+        if(!res.ok) {
+            alert_error.fire({ text: res.message });
+            return;
+        }
+
+        user.set(null);
+        isAuthenticated.set(false);
+        success.fire({ text: 'La sesión se finalizó con exito'})
+        push('/login');
     }
 </script>
 
 <aside class="sidenav">
     <Nav />
     <div class="logout-button">
-        <button>
+        <button onclick={handleLogout}>
             <img src={iconLogout} alt="Icono cerrar sesión">
             Cerrar sesión
         </button>

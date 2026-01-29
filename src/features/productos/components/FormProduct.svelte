@@ -7,10 +7,12 @@
         createProduct,
         editProduct,
         getCategories,
+        getModifiedFields,
         getOneProduct,
     } from "../helpers/products";
     import { productsCategories, reloadProducts } from "../store";
     import { createProductForm } from "../helpers/productForm";
+    import { alert_error, loading, success } from "@lib/utils/alerts";
 
     interface Props {
         productID: number;
@@ -19,43 +21,68 @@
     }
 
     let { isEditMode = false, onClose, productID = 0 }: Props = $props();
+    
+    let originalProduct = $state({});
 
     const { productForm } = createProductForm();
 
     const handleCreateSubmit = async (e: Event) => {
         e.preventDefault();
+        loading.fire();
+
         const newProduct = cleanDataProduct($productForm);
         const res = await createProduct(newProduct);
 
-        if (!res) return;
+        if (!res.ok) {
+            alert_error.fire({ text: res.message });
+            return;
+        }
 
-        alert("Producto registrado con exito");
+        success.fire({ text: 'Producto registrado con éxito'})
         onClose();
         $reloadProducts = true;
     };
 
     const getDataProduct = async (id: number) => {
         const res = await getOneProduct(id);
-        if (res) {
-            const data = res.data;
 
-            $productForm.cod_producto = data[0].cod_producto;
-            $productForm.nombre_producto = data[0].nombre_producto;
-            $productForm.id_categoria_producto = data[0].id_categoria_producto;
-            $productForm.precio = data[0].precio || "";
-            $productForm.stock = data[0].stock || "";
-            $productForm.descripcion = data[0].descripcion || "";
+        if(!res.ok) {
+            alert_error.fire({ text: res.message });
+            return
         }
+
+        const data = res.data.data;
+
+        $productForm.cod_producto = data[0].cod_producto;
+        $productForm.nombre_producto = data[0].nombre_producto;
+        $productForm.id_categoria_producto = data[0].id_categoria_producto;
+        $productForm.precio = data[0].precio || "";
+        $productForm.stock = data[0].stock || "";
+        $productForm.descripcion = data[0].descripcion || "";
+
+        originalProduct = structuredClone(data[0]);
     };
 
     const handleEditSubmit = async (e: Event) => {
         e.preventDefault();
-        const modifiedProduct = cleanDataProduct($productForm);
+        loading.fire();
+
+        const updatedFields = getModifiedFields(originalProduct, $productForm);
+
+        if(Object.keys(updatedFields).length === 0) {
+            alert_error.fire({ text: 'No hay cambios para guardar' });
+            return
+        }
+
+        const modifiedProduct = cleanDataProduct(updatedFields)
         const res = await editProduct(productID, modifiedProduct);
 
-        if (!res) return;
+        if (!res.ok) {
+            alert_error.fire({ text: res.message });
+            return;
+        }
 
-        alert("El producto se modificó con exito");
+        success.fire({ text: 'El producto se modificó con exito'})
         onClose();
         $reloadProducts = true;
     };
@@ -63,9 +90,13 @@
     onMount(async () => {
         if(!$productsCategories.length) {
             const res = await getCategories();
-            if (res) {
-                $productsCategories = res.data;
+
+            if(!res.ok) {
+                alert_error.fire({ text: res.message });
+                return
             }
+
+            $productsCategories = res.data.data;
         }
 
         if (productID) {

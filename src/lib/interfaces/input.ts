@@ -12,5 +12,5 @@ export interface PropsInput {
     minLength?: number
     maxLength?: number
     showToggle?: boolean 
-    onChange?: (e: Event, value: string) => void
+    onChange?: (e: Event) => void
 }

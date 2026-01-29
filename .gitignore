@@ -14,6 +14,7 @@ dist-ssr
 
 vitacora.txt
 notas.txt
+.env
 
 # Editor directories and files
 .vscode/*

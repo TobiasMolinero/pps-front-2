@@ -14,8 +14,8 @@ export async function checkSession() {
 			user.set(null);
 			isAuthenticated.set(false);
 		} else {
-			console.error("Error verificando sesión:", error);
-		}
+            alert('Ocurrio un error en el servidor')
+        }
     } finally {
         isLoadingAuth.set(false);
     }

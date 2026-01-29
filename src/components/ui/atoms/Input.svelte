@@ -28,6 +28,8 @@
         const target = e.target as HTMLInputElement;
         let inputValue = target.value;
 
+        if(error !== '') error = '';
+
         if (format === "dni") {
             value = formatDNI(inputValue);
             return;
