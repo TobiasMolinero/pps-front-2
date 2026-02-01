@@ -10,16 +10,25 @@
     totalPages: number
     currentPage: number
     onClick: (page: number) => void
+    filterActions?: (row: T, actions: Action[]) => Action[] 
   };
   
-  let { columns, data, actions, totalPages, currentPage, onClick }: Props = $props(); 
+  let { 
+    columns,
+    data,
+    actions,
+    totalPages,
+    currentPage,
+    onClick,
+    filterActions = (row: any, actions: Action[]) => actions
+   }: Props = $props(); 
 </script>
 
 <div class="component-container">
   <div class="table-container">
     <table>
       <TableHeader {columns} />
-      <TableBody {columns} {data} {actions} />
+      <TableBody {columns} {data} {actions} {filterActions} />
     </table>
   </div>
   <PaginationControls {totalPages} {currentPage} {onClick} />

@@ -44,16 +44,19 @@
             icon: iconStock,
             label: "Ingresar stock",
             onClick: (id: number) => handleStockForm(id),
+            show: true
         },
         {
             icon: iconPencil,
             label: "Editar",
             onClick: (id: number) => handleFormEdit(id),
+            show: true
         },
         {
             icon: iconTrash,
             label: "Eliminar",
             onClick: (id: number) => handleDelete(id),
+            show: true
         },
     ];
 

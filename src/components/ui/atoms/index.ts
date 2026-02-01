@@ -10,3 +10,4 @@ export { default as TableColumn} from './TableColumn.svelte';
 export { default as ToggleMenu} from './ToggleMenu.svelte';
 export { default as PlusIcon } from './DynamicIcons/PlusIcon.svelte';
 export { default as Select } from './Select.svelte';
+export { default as DatePicker } from './DatePicker.svelte';

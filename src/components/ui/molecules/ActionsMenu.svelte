@@ -79,20 +79,22 @@
 
   <ul class="menu-list" class:open class:closing>
     {#each actions as action, i (action.label)}
-      <li>
-        <Tooltip label={action.label} position="left">
-          <button
-            type="button"
-            class="menu-item"
-            class:open
-            style="--delay: {(actions.length - i) *
-              30}ms;  --reverse-delay: {i * 30}ms;"
-            onclick={() => handleAction(action)}
-          >
-            <Icon src={action.icon} />
-          </button>
-        </Tooltip>
-      </li>
+      {#if action.show}
+        <li>
+          <Tooltip label={action.label} position="left">
+            <button
+              type="button"
+              class="menu-item"
+              class:open
+              style="--delay: {(actions.length - i) *
+                30}ms;  --reverse-delay: {i * 30}ms;"
+              onclick={() => handleAction(action)}
+            >
+              <Icon src={action.icon} />
+            </button>
+          </Tooltip>
+        </li>
+      {/if}
     {/each}
   </ul>
 </div>
