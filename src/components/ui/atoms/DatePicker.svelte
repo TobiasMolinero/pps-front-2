@@ -16,7 +16,7 @@
         id,
         name,
         label,
-        value = "",
+        value = $bindable(""),
         min,
         max,
         required = false,
@@ -50,7 +50,7 @@
             {max}
             {required}
             {disabled}
-            on:change={handleChange}
+            onchange={handleChange}
         />
     </div>
 
@@ -104,24 +104,9 @@
         font-size: 0.75rem;
     }
 
-    .calendar-btn {
-        position: absolute;
-        right: 0.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        opacity: 0.6;
-    }
-
-    .calendar-btn:hover {
-        opacity: 0.8;
-    }
-
-    .calendar-btn:disabled {
-        opacity: 0.3;
+    .input-field:disabled {
+        opacity: 0.5;
         cursor: default;
+        cursor: not-allowed;
     }
 </style>

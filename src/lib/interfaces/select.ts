@@ -1,7 +1,7 @@
 export interface PropsSelect {
     id?: string;
     label?: string;
-    value?: number;
+    value?: number | string;
     options: Record<string, number | string | boolean>[]; // lista de objetos
     disabled?: boolean;
     required?: boolean;

@@ -12,8 +12,8 @@
   let isCheckingSession: boolean = $state(true);
   
   onMount(async () => {
-    await checkSession();
-    isCheckingSession = false;
+    // await checkSession();
+    // isCheckingSession = false;
   })
   
   $effect(() => {

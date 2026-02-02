@@ -20,7 +20,7 @@
         <label for={id} class="input-label">{label}</label>
     {/if}
 
-    <select {id} class="select-native" bind:value {disabled} {required} style={`width: ${width}`}>
+    <select {id} class="select-native" bind:value {disabled} {required} style="width: {width}">
         {#each options as option (option[valueKey])}
             <option value={option[valueKey]}>
                 {option[displayKey]}
