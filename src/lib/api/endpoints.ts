@@ -7,5 +7,6 @@ export const apiRoutes = {
     reset_password: '/auth/reset-password',
     logout: '/auth/logout/',
     check_session: '/auth/user',
-    users_names: '/users-names'
+    users_names: '/auth/users-names',
+    sales: '/ventas'
 }

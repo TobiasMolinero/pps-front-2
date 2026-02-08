@@ -1,38 +1,160 @@
 <script lang="ts">
+    import iconReceipt from "@assets/icons/receipt-fill.svg";
+    import iconReceiptX from "@assets/icons/receipt-x-fill.svg";
+    import iconEye from "@assets/icons/eye-fill.svg";
+    import iconTrash from "@assets/icons/trash-fill.svg";
+    import iconPencil from "@assets/icons/pencil-fill.svg";
     import { Heading, Button, PlusIcon, Table } from "@components/ui";
     import { colorTextWhite } from "@lib/utils/constants";
-    import { actions, columns, filterActionsForRow } from "@features/ventas/helpers/sales";
+    import {
+        columns,
+        filterActionsForRow,
+    } from "@features/ventas/helpers/sales";
     import FilterOptions from "@features/ventas/components/FilterOptions.svelte";
     import type { FilterSalesParams } from "@features/ventas/interfaces/interfaces";
+    import { storeSales, updateSales } from "@features/ventas/store";
+    import { alert_error, loading, success, warning } from "@lib/utils/alerts";
+    import {
+    deleteSale,
+        getFirstDayOfCurrentMonth,
+        getSales,
+    } from "@features/ventas/helpers/helpers";
+    import { onMount } from "svelte";
+    import { push } from "svelte-spa-router";
+    import type { Action } from "@lib/interfaces/actionsmenu";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
+    let firstDayOfMonth: string = $state("");
+    let currentDay: string = $state("");
 
-    const data: any[] = [
+    const actions: Action[] = [
         {
-            id: 1,
-            fecha_venta: "1/02/2026",
-            usuario: "tobias",
-            estado: "emitida",
-            nro_factura: "-",
-            tipo_factura: "C",
-            importe_total: 4000,
+            icon: iconReceiptX,
+            label: "Anular factura",
+            show: true,
+            onClick: (id: number) => console.log(id),
+        },
+        {
+            icon: iconReceipt,
+            label: "Generar factura",
+            show: true,
+            onClick: (id: number) => console.log(id),
+        },
+        {
+            icon: iconEye,
+            label: "Ver detalle",
+            show: true,
+            onClick: (id: number) => push(`/detalle-venta?id=${id}`),
+        },
+        {
+            icon: iconPencil,
+            label: "Editar",
+            show: true,
+            onClick: (id: number) => push(`/editar-venta?id=${id}`),
+        },
+        {
+            icon: iconTrash,
+            label: "Eliminar",
+            show: true,
+            onClick: (id: number) => handleDelete(id),
         },
     ];
 
-    const handleFilter = async ({ 
+    const loadingSales = async (page: number) => {
+        const res = await getSales(page, {
+            fecha_desde: firstDayOfMonth,
+            fecha_hasta: currentDay,
+        });
+
+        if (!res.ok) return await alert_error.fire({ text: res.message });
+
+        $storeSales = res.data.data.map((sale) => ({
+            ...sale,
+            nro_factura: sale.nro_factura || "-",
+            fecha_venta: sale.fecha_venta.substring(0, 10),
+        }));
+
+        currentPage = res.data.current_page;
+        totalPages = res.data.total_pages;
+    };
+
+    const handleFilter = async ({
         dateFromInput,
         dateToInput,
         selectTypeBillInput,
         selectUserInput,
         selectStateInput,
     }: FilterSalesParams) => {
-        console.log(dateFromInput);
-        console.log(dateToInput);
-        console.log(selectTypeBillInput);
-        console.log(selectStateInput);
-        console.log(selectUserInput);
-    }
+        const res = await getSales(currentPage, {
+            fecha_desde: dateFromInput,
+            fecha_hasta: dateToInput,
+            id_tipo_factura: selectTypeBillInput,
+            id_usuario: selectUserInput,
+            estado: selectStateInput,
+        });
+
+        if (!res.ok) {
+            await alert_error.fire({ text: res.message });
+            return;
+        }
+
+        $storeSales = res.data.data.map((sale) => ({
+            ...sale,
+            nro_factura: sale.nro_factura || "-",
+            fecha_venta: sale.fecha_venta.substring(0, 10),
+        }));
+
+        currentPage = res.data.current_page;
+        totalPages = res.data.total_pages;
+    };
+
+    const handleReload = async () => {
+        await loadingSales(currentPage);
+        $updateSales = false;
+    };
+
+    const navToNewSale = () => {
+        push("/registrar-venta");
+    };
+
+    const handleDelete = async (id: number) => {
+        console.log(id)
+        const alertResolve = await warning.fire({
+            text: "¿Está seguro que desea eliminar este producto?",
+        });
+
+        if (!alertResolve.isConfirmed) return;
+
+        loading.fire();
+
+        const res = await deleteSale(id);
+
+        if (!res.ok) {
+            alert_error.fire({ text: res.message });
+            return;
+        }
+
+        await success.fire({ text: "El producto fue eliminado correctamente." });
+
+        if ($storeSales.length === 1 && currentPage > 1) {
+            currentPage--;
+        }
+
+        await handleReload();
+    };
+
+    $effect(() => {
+        if ($updateSales) {
+            handleReload();
+        }
+    });
+
+    onMount(async () => {
+        firstDayOfMonth = getFirstDayOfCurrentMonth();
+        currentDay = new Date().toISOString().split("T")[0];
+        await loadingSales(currentPage);
+    });
 </script>
 
 <div class="title-container">
@@ -44,7 +166,7 @@
 </div>
 <div class="ventas-menu">
     <FilterOptions onFilter={handleFilter} />
-    <Button variant="success">
+    <Button variant="success" onclick={navToNewSale}>
         {#snippet icon()}
             <PlusIcon width={24} height={24} color={colorTextWhite} />
         {/snippet}
@@ -55,7 +177,7 @@
 </div>
 <Table
     {columns}
-    {data}
+    data={$storeSales}
     {actions}
     {currentPage}
     {totalPages}

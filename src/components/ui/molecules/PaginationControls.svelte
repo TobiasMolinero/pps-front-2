@@ -120,7 +120,7 @@
         align-items: center;
         column-gap: var(--space-2);
         padding: var(--space-2);
-        background-color: var(--text-white);
+        background-color: white;
         border-top: 1px solid var(--color-slate-800);
     }
 

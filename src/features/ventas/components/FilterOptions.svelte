@@ -4,6 +4,11 @@
     import Select from "@components/ui/atoms/Select.svelte";
     import type { FilterSalesParams } from "../interfaces/interfaces";
     import { billTypesOptions, stateOptions } from "../helpers/sales";
+    import { onMount } from "svelte";
+    import { safeApiRequest } from "@lib/api/safeApiRequest";
+    import { apiRoutes } from "@lib/api/endpoints";
+    import { alert_error } from "@lib/utils/alerts";
+    import { getFirstDayOfCurrentMonth } from "../helpers/helpers";
 
     interface Props {
         onFilter: (event: FilterSalesParams) => void
@@ -14,10 +19,11 @@
     let disabledButton: boolean = $state(true);
     let showCleanButton: boolean = $state(false);
     let dateFromInput: string = $state("");
-    let dateToInput: string = $state("");
+    let dateToInput: string = $state(new Date().toISOString().split('T')[0]);
     let selectTypeBillInput: number = $state(0);
     let selectStateInput: string = $state("");
     let selectUserInput: number = $state(0);
+    let usersOptions: {id: number, usuario: string}[] = $state([]);
 
     const handleSubmit = (e: Event) => {
         e.preventDefault();
@@ -31,15 +37,15 @@
     }
     
     const handleClean = () => {
-        dateFromInput = "";
-        dateToInput = "";
+        dateFromInput = getFirstDayOfCurrentMonth();
+        dateToInput = new Date().toISOString().split('T')[0];
         selectTypeBillInput = 0;
         selectStateInput = "";
         selectUserInput = 0;
 
         onFilter?.({
-            dateFromInput: "",
-            dateToInput: "",
+            dateFromInput: getFirstDayOfCurrentMonth(),
+            dateToInput: new Date().toISOString().split('T')[0],
             selectTypeBillInput: 0,
             selectStateInput: "",
             selectUserInput: 0,
@@ -56,19 +62,30 @@
         );
 
         showCleanButton = (
-            dateFromInput ||
-            dateToInput ||
             selectTypeBillInput !== 0 ||
             selectStateInput !== "" ||
             selectUserInput !== 0
         ) as boolean;
+    })
+
+    const loadingUsersOptions = async () => {
+        const res = await safeApiRequest<{users: {id: number, usuario: string}[]}>('get', apiRoutes.users_names)
+        
+        if (!res.ok) return await alert_error.fire({ text: res.message });
+
+        usersOptions = res.data.users;
+    }
+
+    onMount(async () => {
+        dateFromInput = getFirstDayOfCurrentMonth();
+        await loadingUsersOptions();
     })
 </script>
 
 <form class="form" onsubmit={handleSubmit}>
     <div class="form-inputs">
         <DatePicker label="Desde" bind:value={dateFromInput} />
-        <DatePicker label="Hasta" bind:value={dateToInput} />
+        <DatePicker label="Hasta" bind:value={dateToInput} max={new Date().toISOString().split('T')[0]} />
         <Select
             label="Tipo de factura"
             options={billTypesOptions}
@@ -85,7 +102,7 @@
         />
         <Select 
             label="Vendedor"
-            options={[{id: 1, usuario: "tobias"}]}
+            options={usersOptions}
             valueKey="id"
             displayKey="usuario"
             bind:value={selectUserInput}

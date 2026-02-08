@@ -32,3 +32,20 @@ export function formatDNI(value: string): string {
     .replace(/\D/g, '')         // solo números
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') // 12345678 → 12.345.678
 }
+
+export function formatCUIL(value: string): string {
+  let digits = value.replace(/\D/g, "");
+
+  // Limita a 11 dígitos
+  if (digits.length > 11) {
+    digits = digits.slice(0, 11);
+  }
+
+  // Aplica formato solo si están los 11 dígitos
+  if (digits.length === 11) {
+    return digits.replace(/^(\d{2})(\d{8})(\d{1})$/, "$1-$2-$3");
+  }
+
+  // Si todavía no hay 11 dígitos, se devuelve sin formatear
+  return digits;
+}

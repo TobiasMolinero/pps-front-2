@@ -8,7 +8,7 @@ export interface PropsInput {
     name?: string
     placeholder?: string
     error?: string
-    format?: 'money' | 'dni' | ''
+    format?: 'money' | 'dni' | 'cuil' | ''
     minLength?: number
     maxLength?: number
     showToggle?: boolean 

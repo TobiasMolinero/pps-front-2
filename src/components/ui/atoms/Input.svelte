@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { formatDNI, formatMoney } from "@lib/formatters";
+    import { formatCUIL, formatDNI, formatMoney } from "@lib/formatters";
     import type { PropsInput } from "@lib/interfaces/input";
     import Icon from "./Icon.svelte";
     import eyeOpen from "@assets/icons/eye.svg";
@@ -35,6 +35,10 @@
             return;
         }
 
+        if(format === 'cuil') {
+            value = formatCUIL(inputValue)
+        }
+
         if (format === "money") {
             value = formatMoney(inputValue);
             return;
@@ -47,6 +51,23 @@
 
     $effect(() => {
         inputType = type === "password" && showPassword ? "text" : type;
+
+        if(error !== '') error = '';
+
+        if (format === "dni") {
+            value = formatDNI(String(value));
+            return;
+        }
+
+        if(format === 'cuil') {
+            value = formatCUIL(String(value))
+            return;
+        }
+
+        if (format === "money") {
+            value = formatMoney(String(value));
+            return;
+        }
     });
 </script>
 

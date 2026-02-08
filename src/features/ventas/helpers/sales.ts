@@ -1,9 +1,4 @@
 import type { Action } from "@lib/interfaces/actionsmenu";
-import iconReceipt from '@assets/icons/receipt-fill.svg';
-import iconReceiptX from '@assets/icons/receipt-x-fill.svg';
-import iconEye from "@assets/icons/eye-fill.svg";
-import iconTrash from "@assets/icons/trash-fill.svg";
-import iconPencil from "@assets/icons/pencil-fill.svg";
 import type { BillType } from "../interfaces/interfaces";
 
 export const columns = [
@@ -14,39 +9,6 @@ export const columns = [
     { key: "nro_factura", label: "Nro. factura" },
     { key: "tipo_factura", label: "Tipo factura" },
     { key: "importe_total", label: "Importe" }
-];
-
-export const actions: Action[] = [
-    {
-        icon: iconReceiptX,
-        label: "Anular factura",
-        show: true,
-        onClick: (id: number) => console.log(id),
-    },
-    {
-        icon: iconReceipt,
-        label: "Generar factura",
-        show: true,
-        onClick: (id: number) => console.log(id),
-    },
-    {
-        icon: iconEye,
-        label: "Ver detalle",
-        show: true,
-        onClick: (id: number) => console.log(id),
-    },
-    {
-        icon: iconPencil,
-        label: "Editar",
-        show: true,
-        onClick: (id: number) => console.log(id),
-    },
-    {
-        icon: iconTrash,
-        label: "Eliminar",
-        show: true,
-        onClick: (id: number) => console.log(id),
-    },
 ];
 
 export const filterActionsForRow = (row: any, actions: Action[]): Action[] => {
