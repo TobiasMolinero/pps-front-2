@@ -126,6 +126,8 @@ export function prepareRequestData(formData: FormSaleData): CreateSaleRequestDat
             estado: state,
             importe_total: total,
             observaciones: formData.observaciones,
+            condicion_iva_cliente: formData.condicion_iva_cliente,
+            tipo_documento_cliente: formData.tipo_documento_cliente,
             nro_documento_cliente: formData.nro_documento_cliente,
             nombre_cliente: formData.nombre_cliente,
             domicilio_cliente: formData.domicilio_cliente,
@@ -158,6 +160,11 @@ export async function editSale(id_venta: number, requestData: CreateSaleRequestD
 
 export async function deleteSale(id_venta: number) {
     const response = await safeApiRequest('delete', `${apiRoutes.sales}/${id_venta}`);
+    return response;
+}
+
+export async function anularFactura(id_venta: number) {
+    const response = await safeApiRequest('patch', apiRoutes.anular_factura + id_venta);
     return response;
 }
 

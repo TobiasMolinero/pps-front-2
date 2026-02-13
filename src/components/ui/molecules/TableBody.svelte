@@ -33,9 +33,11 @@
                     <td>{row[column.key]}</td>
                 {/each}
 
-                <td>
-                    <ActionsMenu actions={filterActions(row, mapActionsWhitId(row.id))} />
-                </td>
+                {#if actions.length}
+                    <td>
+                        <ActionsMenu actions={filterActions(row, mapActionsWhitId(row.id))} />
+                    </td>
+                {/if}
             </tr>
         {/each}
     {:else}

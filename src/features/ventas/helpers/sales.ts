@@ -44,7 +44,21 @@ export const filterActionsForRow = (row: any, actions: Action[]): Action[] => {
 export const billTypesOptions: BillType[] = [
     {id: 1, tipo_factura: 'A'},
     {id: 2, tipo_factura: 'B'},
-    {id: 3, tipo_factura: 'C'}
+]
+
+export const customerConditionA = [
+    { label: 'Monotributista', value: 'monotributo' },
+    { label: 'Responsable inscripto', value: 'resp_inscripto' }
+]
+
+export const customerConditionB = [
+    { label: 'Consumidor final', value: 'consumidor' },
+    { label: 'Exento de IVA', value: 'exento' },
+]
+
+export const documentTypeOptions = [
+    { label: 'CUIL', value: 'CUIL'},
+    { label: 'CUIT', value: 'CUIT'}
 ]
 
 export const stateOptions = [

@@ -15,7 +15,9 @@
     import { storeSales, updateSales } from "@features/ventas/store";
     import { alert_error, loading, success, warning } from "@lib/utils/alerts";
     import {
+    anularFactura,
     deleteSale,
+        facturarVenta,
         getFirstDayOfCurrentMonth,
         getSales,
     } from "@features/ventas/helpers/helpers";
@@ -33,13 +35,13 @@
             icon: iconReceiptX,
             label: "Anular factura",
             show: true,
-            onClick: (id: number) => console.log(id),
+            onClick: (id: number) => handleAnularFactura(id),
         },
         {
             icon: iconReceipt,
             label: "Generar factura",
             show: true,
-            onClick: (id: number) => console.log(id),
+            onClick: (id: number) => handleFacturacion(id),
         },
         {
             icon: iconEye,
@@ -144,6 +146,24 @@
         await handleReload();
     };
 
+    const handleFacturacion = async (id: number) => {
+        loading.fire();
+        const res = await facturarVenta(id);
+        if(!res.ok) return await alert_error.fire({ text: res.message });
+
+        await success.fire({ text: 'Venta facturada con exito' });
+        $updateSales = true;
+    }
+
+    const handleAnularFactura = async (id: number) => {
+        loading.fire();
+        const res = await anularFactura(id);
+        if(!res.ok) return await alert_error.fire({ text: res.message });
+
+        await success.fire({ text: 'La factura fue anulada. Se creo una nota de crédito por esta operación' });
+        $updateSales = true;
+    }
+
     $effect(() => {
         if ($updateSales) {
             handleReload();
@@ -171,7 +191,7 @@
             <PlusIcon width={24} height={24} color={colorTextWhite} />
         {/snippet}
         {#snippet label()}
-            Nuevo producto
+            Registrar venta
         {/snippet}
     </Button>
 </div>

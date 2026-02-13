@@ -1,7 +1,7 @@
 <script lang="ts">
     import Select from "@components/ui/atoms/Select.svelte";
     import { DatePicker, Heading, Input } from "@components/ui";
-    import { billTypesOptions, paymentMethodsOptions } from "@features/ventas/helpers/sales";
+    import { billTypesOptions, customerConditionA, customerConditionB, documentTypeOptions, paymentMethodsOptions } from "@features/ventas/helpers/sales";
     import Button from "@components/ui/atoms/Button.svelte";
     import SaleDetail from "@features/ventas/components/SaleDetail.svelte";
     import { storeDetailSale, storeSelectedBillType, storeSelectProducts, updateSales } from "@features/ventas/store";
@@ -16,6 +16,8 @@
     let inputDate: string = $state(new Date().toISOString().split('T')[0]);
     let selectPaymentMethodInput: string = $state("");
     let inputObservations: string = $state("");
+    let inputCustomerCondition: string = $state("consumidor");
+    let inputDocumentType: string = $state("CUIL")
     let inputNroDocument: string = $state("");
     let inputName: string = $state("");
     let inputAddress: string = $state("");
@@ -27,6 +29,8 @@
 
     let errorSelectPaymentMethod: string = $state('');
     let errorInputNroDocument: string = $state('');
+    let errorInputName: string = $state('');
+    let errorInputAdress: string = $state('');
     let errorDetailSale: boolean = $state(false);
 
     let total: number = $state(0);
@@ -55,7 +59,7 @@
 
     const handleSubmit = async () => {
         const formErrors: string[] = validateForm();
-
+        
         if(formErrors.length !== 0) {
             let errorMessage = 'Debe completar los campos obligatorios: '
             formErrors.map((error, index) => {
@@ -74,6 +78,8 @@
             fecha_venta: inputDate,
             metodo_pago: selectPaymentMethodInput,
             observaciones: inputObservations.trim(),
+            condicion_iva_cliente: inputCustomerCondition,
+            tipo_documento_cliente: inputDocumentType,
             nro_documento_cliente: inputNroDocument.trim().replace(/\D/g, ''),
             nombre_cliente: inputName.trim(),
             domicilio_cliente: inputAddress.trim(),
@@ -81,7 +87,7 @@
 
         const requestData = prepareRequestData(formSaleData);
         const res = await createSale(requestData);
-        console.log(res)
+        
         if (!res.ok) return alert_error.fire({ text: res.message });
 
         const saleID = res.data.id_venta;
@@ -91,7 +97,7 @@
         const { isConfirmed } = await question.fire({ text: '¿Facturar venta?' })
 
         if(isConfirmed) {
-            await loading.fire();
+            loading.fire();
             const res = await facturarVenta(saleID);
             if(!res.ok) return alert_error.fire({ text: res.message });
 
@@ -108,9 +114,28 @@
             errors.push('Metodo de pago');
         }
 
-        if(inputNroDocument === '') {
-            errorInputNroDocument = 'Debe completar este campo';
+        if(($storeSelectedBillType === 1 && inputNroDocument === '') ||
+            ($storeSelectedBillType === 2 && inputCustomerCondition === 'monotributo' && inputNroDocument === '') ||
+            ($storeSelectedBillType === 2 && inputCustomerCondition === 'exento' && inputNroDocument === '') 
+        ) {
+            errorInputNroDocument = 'El CUIL/CUIT es obligatorio';
             errors.push('Nro. de documento');
+        }
+
+        if(($storeSelectedBillType === 1 && inputName === '') ||
+            ($storeSelectedBillType === 2 && inputCustomerCondition === 'monotributo' && inputName === '') ||
+            ($storeSelectedBillType === 2 && inputCustomerCondition === 'exento' && inputName === '') 
+        ) {
+            errorInputName = 'El nombre/razón social es obligatorio';
+            errors.push('Nombre');
+        }
+
+        if(($storeSelectedBillType === 1 && inputAddress === '') ||
+            ($storeSelectedBillType === 2 && inputCustomerCondition === 'monotributo' && inputAddress === '') ||
+            ($storeSelectedBillType === 2 && inputCustomerCondition === 'exento' && inputAddress === '') 
+        ) {
+            errorInputAdress = 'La dirección es obligatoria';
+            errors.push('Dirección');
         }
 
         if($storeDetailSale.length === 0) {
@@ -145,6 +170,8 @@
             fecha_venta: inputDate,
             metodo_pago: selectPaymentMethodInput,
             observaciones: inputObservations.trim(),
+            condicion_iva_cliente: inputCustomerCondition,
+            tipo_documento_cliente: inputDocumentType,
             nro_documento_cliente: inputNroDocument.trim().replace(/\D/g, ''),
             nombre_cliente: inputName.trim(),
             domicilio_cliente: inputAddress.trim(),
@@ -161,10 +188,12 @@
     }
 
     const resetForm = () => {
-        $storeSelectedBillType = 3;
+        $storeSelectedBillType = 2;
         inputDate = new Date().toISOString().split('T')[0];
         selectPaymentMethodInput = '';
         inputObservations = '';
+        inputCustomerCondition = 'consumidor';
+        inputDocumentType = 'CUIL';
         inputNroDocument = '';
         inputName = '';
         inputAddress = '';
@@ -173,6 +202,8 @@
 
     $effect(() => {
         isAddButtonDisabled = !(selectProductInput > 0 && inputQuantity > 0);
+
+        if(inputCustomerCondition === 'resp_inscripto' || inputCustomerCondition === 'monotributo') inputDocumentType = 'CUIT';
 
         if ($storeDetailSale.length > 0) {
             subTotal = calculateSubTotal();
@@ -208,6 +239,8 @@
                 inputDate = saleData.fecha_venta.substring(0, 10);
                 selectPaymentMethodInput = saleData.metodo_pago;
                 inputObservations = saleData.observaciones;
+                inputCustomerCondition = saleData.condicion_iva_cliente;
+                inputName = saleData.tipo_documento_cliente;
                 inputNroDocument = saleData.nro_documento_cliente;
                 inputName = saleData.nombre_cliente;
                 inputAddress = saleData.domicilio_cliente;
@@ -266,21 +299,39 @@
                 Datos del cliente
             {/snippet}
         </Heading>
-        <div class="client-data-inputs">
-            <Input
-                label={$storeSelectedBillType === 3 ? "DNI *" : "CUIL / CUIT *"}
-                type="text"
-                format={$storeSelectedBillType === 3 ? "dni" : "cuil"}
-                maxLength={$storeSelectedBillType === 3 ? 10 : 13}
-                error={errorInputNroDocument}
-                bind:value={inputNroDocument}
-            />
-            <Input
-                label="Nombre/Razón Social"
-                type="text"
-                bind:value={inputName}
-            />
-            <Input label="Domicilio" type="text" bind:value={inputAddress} />
+        <div>
+            <div style="display: flex; column-gap: 10px">
+                <div style="width: 200px">
+                    <Select options={$storeSelectedBillType === 1 ? customerConditionA : customerConditionB} valueKey="value" displayKey="label" label="Condicion frente al IVA" bind:value={inputCustomerCondition} />
+                </div>
+                {#if inputCustomerCondition === 'exento'}                        
+                    <div style="width: 200px">
+                        <Select options={documentTypeOptions} valueKey="value" displayKey="label" label="Tipo de documento" bind:value={inputDocumentType} />
+                    </div>
+                {/if}
+            </div>
+            {#if $storeSelectedBillType === 1 || 
+                ($storeSelectedBillType === 2 && inputCustomerCondition === 'monotributo') ||
+                ($storeSelectedBillType === 2 && inputCustomerCondition === 'exento')
+            }
+                <div class="client-data-inputs">
+                    <Input
+                        label={inputDocumentType === 'CUIL' ? 'CUIL *' : 'CUIT *'}
+                        type="text"
+                        format={inputDocumentType === 'DNI' ? 'dni' : 'cuil'}
+                        maxLength={inputDocumentType === 'DNI' ? 10 : 13}
+                        error={errorInputNroDocument}
+                        bind:value={inputNroDocument}
+                    />
+                    <Input
+                        label="Razón Social *"
+                        type="text"
+                        error={errorInputName}
+                        bind:value={inputName}
+                    />
+                    <Input label="Domicilio *" type="text" error={errorInputAdress} bind:value={inputAddress} />
+                </div>
+            {/if}
         </div>
     </div>
     <div class="bill-detail-container">
@@ -329,7 +380,7 @@
         </div>
     </div>
     <div class="footer-form">
-        {#if $storeSelectedBillType === 1 || $storeSelectedBillType === 2}
+        {#if $storeSelectedBillType === 1}
             <div>
                 <span class="text-slate-800 font-[700]">Sub Total:</span>
                 <span class="w-[150px] text-end text-[18px] font-[700]"
@@ -382,10 +433,14 @@
     }
 
     .client-data-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--space-2);
         padding: var(--space-4);
     }
 
     .client-data-inputs {
+        margin-top: 10px;
         display: flex;
         justify-content: start;
         gap: var(--space-4);

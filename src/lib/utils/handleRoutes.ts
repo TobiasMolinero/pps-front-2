@@ -12,6 +12,7 @@ const appRoutes = [
     '/editar-venta',
     '/detalle-venta',
     '/notas-credito',
+    '/mi-perfil',
     '/admin'
 ];
 

@@ -8,7 +8,7 @@
   import { findScrollableParent } from "@lib/utils/findScrollableParent";
 
   interface Props {
-    actions: Action[];
+    actions?: Action[];
   }
 
   let { actions = [] }: Props = $props();
@@ -111,7 +111,7 @@
     display: flex;
     flex-direction: column;
     row-gap: var(--space-1);
-    pointer-events: none; /* 👈 evita interacción y remueve del flujo */
+    pointer-events: none; /* evita interacción y remueve del flujo */
     list-style-type: none;
     margin: 0;
     padding: 0;

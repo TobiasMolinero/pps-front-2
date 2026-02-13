@@ -7,6 +7,13 @@ export const apiRoutes = {
     reset_password: '/auth/reset-password',
     logout: '/auth/logout/',
     check_session: '/auth/user',
+    get_users: '/auth/users',
     users_names: '/auth/users-names',
-    sales: '/ventas'
+    create_user: '/auth/register',
+    disabled_user: '/auth/disabled-user/',
+    enabled_user: '/auth/enabled-user/',
+    edit_user: '/auth/edit-user/',
+    sales: '/ventas',
+    anular_factura: '/ventas/anular-factura/',
+    notas: '/notas'
 }

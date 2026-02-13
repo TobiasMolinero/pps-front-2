@@ -8,7 +8,7 @@
     import { alert_error, success } from '@lib/utils/alerts';
 
     const handleLogout = async () => {
-        const res = await safeApiRequest('patch', apiRoutes.logout + 1);
+        const res = await safeApiRequest('patch', apiRoutes.logout + $user?.id);
 
         if(!res.ok) {
             alert_error.fire({ text: res.message });

@@ -35,6 +35,8 @@ export interface FormSaleData {
     fecha_venta: string,
     metodo_pago: string,
     observaciones: string,
+    condicion_iva_cliente: string
+    tipo_documento_cliente: string
     nro_documento_cliente: string,
     nombre_cliente: string,
     domicilio_cliente: string,
@@ -49,6 +51,8 @@ export interface CreateSaleRequestData {
         estado: string,
         importe_total: number,
         observaciones: string,
+        condicion_iva_cliente: string
+        tipo_documento_cliente: string
         nro_documento_cliente: string,
         nombre_cliente: string,
         domicilio_cliente: string,
@@ -75,6 +79,8 @@ export interface GetOneSaleResponse {
         observaciones: string
         metodo_pago: string
         importe_total: number
+        condicion_iva_cliente: string
+        tipo_documento_cliente: string
         nro_documento_cliente: string
         nombre_cliente: string
         domicilio_cliente: string
