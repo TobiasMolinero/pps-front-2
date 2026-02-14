@@ -1,7 +1,14 @@
 <script lang="ts">
     import { Header, Sidebar } from "@components/ui";
+    import { user } from "@lib/utils/auth";
+    import { handleRoutes } from "@lib/utils/handleRoutes";
+    import { location } from 'svelte-spa-router';
 
-    let { children } = $props() 
+    let { children } = $props();
+
+    $effect(() => {
+        if ($location) handleRoutes($location, $user?.rol_usuario);
+    });
 </script>
 
 <div class="app-layout">
@@ -29,7 +36,7 @@
     }
 
     main {
-        flex: 1;   
+        flex: 1;
         display: flex;
         flex-direction: column;
         min-height: 0;

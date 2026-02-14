@@ -2,7 +2,7 @@ import axios from "axios";
 import { apiRoutes } from "./endpoints";
 import { isAuthenticated, user } from "@lib/utils/auth";
 import { push, location } from "svelte-spa-router";
-import { alert_error, warning } from "@lib/utils/alerts";
+import { warning } from "@lib/utils/alerts";
 import { get } from "svelte/store";
 
 export const http = axios.create({
@@ -60,7 +60,7 @@ http.interceptors.response.use(
           user.set(null)
           isAuthenticated.set(false)
           await warning.fire({ text: 'La sesión expiró. Vuelva a iniciar sesión.', showCancelButton: false })
-          push('/login')
+          if (get(location) !== '/login') push('/login')
         }
         return Promise.reject(err)
       }

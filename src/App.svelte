@@ -4,23 +4,21 @@
   import AppLayout from '@components/layout/AppLayout.svelte';
   import AuthLayout from '@components/layout/AuthLayout.svelte';
   import { publicRoutes } from '@routes/publicRoutes';
+  import { isAuthenticated } from '@lib/utils/auth';
   import { onMount } from 'svelte';
   import { checkSession } from '@features/auth/utils/checkSession';
-  import { isAuthenticated, user } from '@lib/utils/auth';
-  import { handleRoutes } from '@lib/utils/handleRoutes';
-  
-  let isCheckingSession: boolean = $state(true);
-  
-  onMount(async () => {
+
+  const routesWithoutCheckSession = [
+    '/reset-password',
+    '/forgot-password',
+  ]
+
+  onMount(async() => {
+    if(routesWithoutCheckSession.includes($location)) return;
+
     await checkSession();
-    isCheckingSession = false;
-  })
-  
-  $effect(() => {
-    if(!isCheckingSession) handleRoutes($location, $isAuthenticated, $user?.rol_usuario);
   })
 </script>
-
 
 {#if $isAuthenticated}
   <AppLayout>

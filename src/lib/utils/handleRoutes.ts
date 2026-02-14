@@ -1,10 +1,10 @@
 import { pop, push } from "svelte-spa-router";
+import { get, writable } from "svelte/store";
+import { isAuthenticated } from "./auth";
+
+export const skipNextRouteCheck = writable(false); 
 
 const appRoutes = [
-    '/login',
-    '/registrar',
-    '/forgot-password',
-    '/reset-password',
     '/dashboard',
     '/productos',
     '/ventas',
@@ -16,31 +16,23 @@ const appRoutes = [
     '/admin'
 ];
 
-export function handleRoutes(route: string, isLogin: boolean, userRole?: string) {
-    if(route === "/" && isLogin) {
+export function handleRoutes(route: string, userRole?: string) {
+    if(get(skipNextRouteCheck)) {
+        skipNextRouteCheck.set(false);
+        return;
+    }
+
+    if(!appRoutes.includes(route)) {
+        pop();
+        return;
+    }
+
+    if(route === "/") {
         push('/dashboard');
         return;
     }
 
-    if(route === "/" && !isLogin) {
-        push('/login');
-        return;
-    }
-
-    if(!isLogin && !appRoutes.includes(route)) {
-        console.log("no login, no ruta")
-        push('/login');
-        return;
-    }
-    
-    if(isLogin && route.startsWith('/admin') && userRole !== 'admin') {
-        console.log("login, ruta admin, no admin")
+    if(route.startsWith('/admin') && userRole !== 'admin') {
         pop();  
-    }
-
-    if(isLogin && !appRoutes.includes(route)) {
-        console.log("login, no ruta")
-        pop();
-        return;
     }
 }

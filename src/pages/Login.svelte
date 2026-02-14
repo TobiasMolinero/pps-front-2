@@ -4,9 +4,10 @@
     import { apiRoutes } from "@lib/api/endpoints";
     import { safeApiRequest } from "@lib/api/safeApiRequest";
     import type { LoginResponse } from "@features/auth/interfaces/interfaces";
-    import { push, location } from "svelte-spa-router";
+    import { push } from "svelte-spa-router";
     import { isAuthenticated, isLoadingAuth, user } from "@lib/utils/auth";
     import { alert_error, loading, success } from "@lib/utils/alerts";
+    import { skipNextRouteCheck } from "@lib/utils/handleRoutes";
 
     let userValue: string = $state('');
     let passwordValue: string = $state('');
@@ -25,15 +26,15 @@
         if(!res.ok) {
             if(res.error.code === 'NO_USER') userError = res.message;
             if(res.error.code === 'INVALID_PASSWORD') passwordError = res.message;
-            alert_error.fire({ text: res.message });
+            await alert_error.fire({ text: res.message });
             return
         }
 
+        skipNextRouteCheck.set(true);
         $user = res.data.data;
         $isAuthenticated = true
-        $isLoadingAuth = false
-        success.fire({ text: '¡Iniciaste sesión con exito!' })
         push('/dashboard')
+        success.fire({ text: '¡Iniciaste sesión con exito!' })
     }
 
     const navToForgottenPassword = () => {
