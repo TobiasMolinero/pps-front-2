@@ -3,7 +3,7 @@ import { safeApiRequest } from "@lib/api/safeApiRequest";
 import { storeDetailSale, storeSelectProducts } from "../store";
 import { get } from "svelte/store";
 import { user } from "@lib/utils/auth";
-import type { CreateSaleRequestData, FormSaleData, GetOneSaleResponse, ResponseGetAllSales } from "../interfaces/interfaces";
+import type { CreateSaleRequestData, FormSaleData, GenerateTicketRequestData, GetOneSaleResponse, ResponseGetAllSales } from "../interfaces/interfaces";
 import type { UserData } from "@features/auth/interfaces/interfaces";
 
 export async function getUsers() {
@@ -144,7 +144,7 @@ export async function createSale(requestData: CreateSaleRequestData) {
 }
 
 export async function facturarVenta(id_venta: number) {
-    const response = await safeApiRequest<void>('post', `${apiRoutes.sales}/facturar-venta/${id_venta}`);
+    const response = await safeApiRequest<{message: string, nro_factura: number}>('post', `${apiRoutes.sales}/facturar-venta/${id_venta}`);
     return response;
 }
 
@@ -219,6 +219,6 @@ export function getFirstDayOfCurrentMonth(): string {
     const month = today.getMonth();
     const firstDay = new Date(year, month, 1);
 
-    const formatted = firstDay.toISOString().split('T')[0];
+    const formatted = firstDay.toLocaleDateString('en-CA');
     return formatted;
 }

@@ -12,8 +12,9 @@
     import { addDetailToStore, calculateIva, calculateSubTotal, calculateTotal, createSale, editSale, facturarVenta, getDataOneSale, prepareRequestData } from "@features/ventas/helpers/helpers";
     import { alert_error, loading, question, success } from "@lib/utils/alerts";
     import { querystring, push, location } from 'svelte-spa-router'
+    import { openTicketInNewTab } from "@lib/utils/ticketService";
 
-    let inputDate: string = $state(new Date().toISOString().split('T')[0]);
+    let inputDate: string = $state(new Date().toLocaleDateString('en-CA'));
     let selectPaymentMethodInput: string = $state("");
     let inputObservations: string = $state("");
     let inputCustomerCondition: string = $state("consumidor");
@@ -102,6 +103,8 @@
             if(!res.ok) return alert_error.fire({ text: res.message });
 
             success.fire({ text: 'La venta fue facturada con éxito' });
+            
+            await openTicketInNewTab(saleID);
         }
 
         $updateSales = true;
@@ -189,7 +192,7 @@
 
     const resetForm = () => {
         $storeSelectedBillType = 2;
-        inputDate = new Date().toISOString().split('T')[0];
+        inputDate = new Date().toLocaleDateString('en-CA');
         selectPaymentMethodInput = '';
         inputObservations = '';
         inputCustomerCondition = 'consumidor';
@@ -221,6 +224,7 @@
     })
 
     onMount(async () => {
+        console.log(new Date().toLocaleDateString('en-CA'))
         const productsOptions = await getProductsOption();
         if(productsOptions) $storeSelectProducts = productsOptions;
 

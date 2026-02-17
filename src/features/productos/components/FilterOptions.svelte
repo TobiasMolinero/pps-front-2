@@ -2,26 +2,33 @@
     import { Button, Input, Select } from "@components/ui";
 
     interface Props {
+        inputValue: string
+        selectValue: number
         options: Record<string, number | string | boolean>[]
-        onFilter: (event: { inputValue: string, selectValue: number}) => void
+        onFilter: () => void
+        onCleanFilter: () => void
     }
 
-    let { options, onFilter }: Props = $props();
+    let {
+        inputValue = $bindable(""),
+        selectValue = $bindable(0),
+        options,
+        onFilter,
+        onCleanFilter
+    }: Props = $props();
     
-    let inputValue: string = $state('');
-    let selectValue: number = $state(0);
     let disabledButton: boolean = $state(true);
     let showCleanButton: boolean = $state(false);
 
     const handleSubmit = (e: Event) => {
         e.preventDefault();
-        onFilter?.({ inputValue, selectValue });
+        onFilter?.();
     }
 
     const handleClean = () => {
         inputValue = '';
         selectValue = 0;
-        onFilter?.({ inputValue, selectValue })
+        onCleanFilter?.()
     }
 
     $effect(() => {

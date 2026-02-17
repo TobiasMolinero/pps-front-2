@@ -6,6 +6,8 @@ import Admin from '../pages/Admin.svelte'
 import SaleDetail from '../pages/SaleDetail.svelte'
 import PersonalProfile from '../pages/PersonalProfile.svelte'
 import Notes from '../pages/Notes.svelte'
+import UserAdmin from '../pages/UserAdmin.svelte'
+import CategoryProductsAdmin from '../pages/CategoryProductsAdmin.svelte'
 
 export const protectedRoutes = {
   '/dashboard': Home,
@@ -16,5 +18,7 @@ export const protectedRoutes = {
   '/productos': Products,
   '/notas-credito': Notes,
   '/mi-perfil': PersonalProfile,
-  '/admin': Admin
+  '/admin': Admin,
+  '/admin/usuarios': UserAdmin,
+  '/admin/categorias-productos': CategoryProductsAdmin,
 }

@@ -2,6 +2,9 @@ import { apiRoutes } from "@lib/api/endpoints";
 import type { ProductForm, ResponseGetAllCategories, ResponseGetAllProducts, ResponseGetOneProduct } from "@features/productos/interfaces/interfaces";
 import { cleanFormatMoney } from "@lib/formatters";
 import { safeApiRequest } from "@lib/api/safeApiRequest";
+import type { Action } from "@lib/interfaces/actionsmenu";
+import { user } from "@lib/utils/auth";
+import { get } from "svelte/store";
 
 export async function getProducts(
     page: number,
@@ -98,4 +101,17 @@ export function getModifiedFields<T extends Record<string, any>>(
     }
 
     return modified;
+}
+
+export const filterActionsProductsByRol = (row: any, actions: Action[]): Action[] => {
+    if (get(user)?.rol_usuario === 'vendedor') {
+        return actions.map((a) => ({
+            ...a,
+            show: [
+                "Ingresar stock"
+            ].includes(a.label),
+        }));
+    }
+
+    return actions;
 }

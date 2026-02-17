@@ -6,8 +6,18 @@
 
     let { children } = $props();
 
+    let loadingScreen = $state(false);
+
+    const handleLoadingScreen = async () => {
+        loadingScreen = true;
+        await handleRoutes($location, $user?.rol_usuario)
+        loadingScreen = false;
+    }
+
     $effect(() => {
-        if ($location) handleRoutes($location, $user?.rol_usuario);
+        if ($location) {
+            handleLoadingScreen();
+        };
     });
 </script>
 
@@ -16,7 +26,9 @@
     <div class="body-app">
         <Sidebar />
         <main>
-            {@render children()}
+            {#if !loadingScreen}
+                {@render children()}
+            {/if}
         </main>
     </div>
 </div>

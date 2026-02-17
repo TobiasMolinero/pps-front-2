@@ -30,7 +30,7 @@
         {#each data as row, i (i)}
             <tr>
                 {#each columns as column (column.key)}
-                    <td>{row[column.key]}</td>
+                    <td class={column.key === 'stock' && row[column.key] < 5 ? "stock-alert" : ""}>{row[column.key]}</td>
                 {/each}
 
                 {#if actions.length}
@@ -60,5 +60,10 @@
 
     .not-found-text {
         color: var(--color-slate-600);
+    }
+
+    .stock-alert {
+        color: var(--color-red-600);
+        font-weight: 600;
     }
 </style>

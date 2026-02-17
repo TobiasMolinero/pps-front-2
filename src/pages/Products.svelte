@@ -15,6 +15,7 @@
     import type { Action } from "@lib/interfaces/actionsmenu";
     import {
         deleteProduct,
+        filterActionsProductsByRol,
         getCategories,
         getProducts,
     } from "@features/productos/helpers/products";
@@ -22,6 +23,7 @@
     import FormAddStock from "@features/productos/components/FormAddStock.svelte";
     import FilterOptions from "@features/productos/components/FilterOptions.svelte";
     import { alert_error, loading, success, warning } from "@lib/utils/alerts";
+    import { user } from "@lib/utils/auth";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
@@ -29,6 +31,9 @@
     let formProductIsOpen: boolean = $state(false);
     let formProductIsEdit: boolean = $state(false);
     let productID: number = $state(0);
+
+    let inputSearchValue: string = $state("");
+    let selectCategoryValue: number = $state(0);
 
     const columns = [
         { key: "cod_producto", label: "Cod. Producto" },
@@ -73,36 +78,30 @@
         productID = id;
     };
 
-    const loadingProducts = async (page: number) => {
-        const res = await getProducts(page);
+    // const loadingProducts = async (page: number) => {
+    //     const res = await getProducts(page);
 
-        if (!res.ok) {
-            alert_error.fire({ text: res.message });
-            return;
-        }
+    //     if (!res.ok) {
+    //         alert_error.fire({ text: res.message });
+    //         return;
+    //     }
 
-        $products = res.data.data.map((product) => {
-            return {
-                ...product,
-                descripcion: product.descripcion || "-",
-                stock: product.stock || 0,
-                precio: formatMoney(String(product.precio)),
-            };
-        });
-        currentPage = res.data.current_page;
-        totalPages = res.data.total_pages;
-    };
+    //     $products = res.data.data.map((product) => {
+    //         return {
+    //             ...product,
+    //             descripcion: product.descripcion || "-",
+    //             stock: product.stock || 0,
+    //             precio: formatMoney(String(product.precio)),
+    //         };
+    //     });
+    //     currentPage = res.data.current_page;
+    //     totalPages = res.data.total_pages;
+    // };
 
-    const handleFilter = async ({
-        inputValue,
-        selectValue,
-    }: {
-        inputValue: string;
-        selectValue: number;
-    }) => {
-        const res = await getProducts(currentPage, {
-            search: inputValue,
-            category: selectValue,
+    const handleFilter = async (page: number) => {
+        const res = await getProducts(page, {
+            search: inputSearchValue,
+            category: selectCategoryValue,
         });
 
         if (!res.ok) {
@@ -119,6 +118,12 @@
         currentPage = res.data.current_page;
         totalPages = res.data.total_pages;
     };
+
+    const handleCleanFilter = async () => {
+        inputSearchValue = "";
+        selectCategoryValue = 0;
+        await handleFilter(1);
+    }
 
     const loadingCategories = async () => {
         const res = await getCategories();
@@ -163,7 +168,7 @@
     };
 
     const handleReload = async () => {
-        await loadingProducts(currentPage);
+        await handleFilter(1);
         $reloadProducts = false;
     };
 
@@ -174,7 +179,7 @@
     });
 
     onMount(async () => {
-        await loadingProducts(currentPage);
+        await handleFilter(1);
         await loadingCategories();
     });
 </script>
@@ -187,15 +192,23 @@
     </Heading>
 </div>
 <div class="products-menu">
-    <FilterOptions options={$productsCategories} onFilter={handleFilter} />
-    <Button variant="success" onclick={handleProductForm}>
-        {#snippet icon()}
-            <PlusIcon width={24} height={24} color={colorTextWhite} />
-        {/snippet}
-        {#snippet label()}
-            Nuevo producto
-        {/snippet}
-    </Button>
+    <FilterOptions
+        bind:inputValue={inputSearchValue}
+        bind:selectValue={selectCategoryValue}
+        options={$productsCategories}
+        onFilter={() => handleFilter(1)}
+        onCleanFilter={handleCleanFilter}
+    />
+    {#if $user?.rol_usuario === 'admin'}    
+        <Button variant="success" onclick={handleProductForm}>
+            {#snippet icon()}
+                <PlusIcon width={24} height={24} color={colorTextWhite} />
+            {/snippet}
+            {#snippet label()}
+                Nuevo producto
+            {/snippet}
+        </Button>
+    {/if}
 </div>
 <Table
     {columns}
@@ -203,7 +216,8 @@
     {actions}
     {currentPage}
     {totalPages}
-    onClick={(page: number) => loadingProducts(page)}
+    filterActions={filterActionsProductsByRol}
+    onClick={(page: number) => handleFilter(page)}
 />
 
 {#if formProductIsOpen}

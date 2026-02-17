@@ -12,7 +12,7 @@ export const columns = [
 ];
 
 export const filterActionsForRow = (row: any, actions: Action[]): Action[] => {
-    if (row.estado === "pendiente") {
+    if (row.estado === "Pendiente") {
         return actions.map((a) => ({
             ...a,
             show: [
@@ -24,14 +24,14 @@ export const filterActionsForRow = (row: any, actions: Action[]): Action[] => {
         }));
     }
 
-    if (row.estado === "emitida") {
+    if (row.estado === "Emitida") {
         return actions.map((a) => ({
             ...a,
             show: ["Ver detalle", "Anular factura"].includes(a.label),
         }));
     }
 
-    if (row.estado === "anulada") {
+    if (row.estado === "Anulada") {
         return actions.map((a) => ({
             ...a,
             show: ["Ver detalle"].includes(a.label),
@@ -42,8 +42,8 @@ export const filterActionsForRow = (row: any, actions: Action[]): Action[] => {
 }
 
 export const billTypesOptions: BillType[] = [
-    {id: 1, tipo_factura: 'A'},
-    {id: 2, tipo_factura: 'B'},
+    {id: 1, tipo_factura: 'A - Responsable inscripto / Monotributista'},
+    {id: 2, tipo_factura: 'B -  Consumidor Final / Exento de IVA'},
 ]
 
 export const customerConditionA = [

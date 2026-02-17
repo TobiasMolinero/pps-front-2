@@ -49,3 +49,12 @@ export function formatCUIL(value: string): string {
   // Si todavía no hay 11 dígitos, se devuelve sin formatear
   return digits;
 }
+
+export function capitalize(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function formatearFecha(fecha: string) {
+  const [año, mes, dia] = fecha.split('-');
+  return `${dia}/${mes}/${año}`;
+}

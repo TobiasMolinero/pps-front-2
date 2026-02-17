@@ -1,9 +1,12 @@
 <script lang=ts>
+    import { Button, Icon } from '@components/ui';
     import { apiRoutes } from '@lib/api/endpoints';
     import { safeApiRequest } from '@lib/api/safeApiRequest';
-    import { alert_error } from '@lib/utils/alerts';
+    import { alert_error, loading } from '@lib/utils/alerts';
     import { onMount } from 'svelte';
     import { push, querystring } from 'svelte-spa-router';
+    import iconPrint from '@assets/icons/printer-fill-white.svg';
+    import { openBillInNewTab } from '@lib/utils/ticketService';
 
     let saleID: number = $state(0);
     let detailSale: any[] = $state([]);
@@ -19,11 +22,19 @@
         return decimal && decimal !== "00" ? `${entero},${decimal}` : entero
     }
 
+    const handleGenerateBill = async () => {
+        loading.fire();
+
+        await openBillInNewTab(saleID);
+
+        loading.close();
+    }
+
     onMount(async () => {
         saleID = Number($querystring?.split("=")[1]);
         const res = await safeApiRequest<any>('get', `${apiRoutes.sales}/${saleID}`);
         if (!res.ok) return await alert_error.fire({ text: res.message });
-        console.log(res)
+        
         detailSale.push(res.data.data);
         
         if(detailSale[0].id_tipo_factura === 1 || detailSale[0].id_tipo_factura === 2) {
@@ -91,20 +102,30 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="importes">
-                    <div>
-                        <span class="text-slate-800 font-[700]">Sub Total:</span>
-                        <span class="w-[150px] text-end text-[18px] font-[700]">$ {formatearNumeroConPuntos(subTotal)}</span>
+                <footer>
+                    <Button variant="primary" type="button" onclick={handleGenerateBill}>
+                        {#snippet icon()}
+                            <Icon src={iconPrint} />
+                        {/snippet}
+                        {#snippet label()}
+                            Generar comprobante
+                        {/snippet}
+                    </Button>
+                    <div class="importes">
+                        <div>
+                            <span class="text-slate-800 font-[700]">Sub Total:</span>
+                            <span class="w-[150px] text-end text-[18px] font-[700]">$ {formatearNumeroConPuntos(subTotal)}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-800 font-[700]">IVA 21%:</span>
+                            <span class="w-[150px] text-end text-[18px] font-[700]">$ {formatearNumeroConPuntos(iva)}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-800 font-[700]">Monto total:</span>
+                            <span class="w-[150px] text-end text-[18px] font-[700]">$ {formatearNumeroConPuntos(total)}</span>
+                        </div>
                     </div>
-                    <div>
-                        <span class="text-slate-800 font-[700]">IVA 21%:</span>
-                        <span class="w-[150px] text-end text-[18px] font-[700]">$ {formatearNumeroConPuntos(iva)}</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-800 font-[700]">Monto total:</span>
-                        <span class="w-[150px] text-end text-[18px] font-[700]">$ {formatearNumeroConPuntos(total)}</span>
-                    </div>
-                </div>
+                </footer>
             {/each}
         {/if}
     </div>
@@ -117,6 +138,7 @@
         align-items: center;
         row-gap: 10px;
         padding: 20px;
+        overflow: auto;
     }
 
     .back-button {
@@ -237,6 +259,12 @@
     }
     .table tbody tr td {
         padding: 10px 0;
+    }
+
+    footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
     }
 
     .importes {

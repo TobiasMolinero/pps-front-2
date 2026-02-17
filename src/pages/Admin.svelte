@@ -1,140 +1,74 @@
 <script lang="ts">
-    import { Button, Heading, PlusIcon, Table } from "@components/ui";
-    import { disabledUser, enabledUser, filterActionsByActivo, getAllUsers } from "@features/auth/helpers/auth";
-    import type { UserData } from "@features/auth/interfaces/interfaces";
-    import { alert_error, success } from "@lib/utils/alerts";
-    import { onMount } from "svelte";
-    import iconChangePassword from '@assets/icons/cambiar-contraseña.svg';
-    import iconUserPlus from '@assets/icons/user-plus.svg';
-    import iconUserMinus from '@assets/icons/user-minus.svg';
-    import { colorTextWhite } from "@lib/utils/constants";
-    import FormUser from "@features/auth/components/FormUser.svelte";
-    import { reloadUsers } from "@features/auth/store";
+    import { Heading } from "@components/ui";
+    import iconUserManager from "@assets/icons/user-manag-dark.svg";
+    import iconCategoryManager from "@assets/icons/gear-fill.svg";
+    import { push } from 'svelte-spa-router';
 
-    let currentPage: number = $state(1);
-    let totalPages: number = $state(1);
-    let users: UserData[] = $state([]);
-    let formUserIsOpen: boolean = $state(false);
-
-    const columns = [
-        { key: "id", label: "#ID" },
-        { key: "nombre", label: "Nombre" },
-        { key: "apellido", label: "Apellido" },
-        { key: "usuario", label: "Usuario" },
-        { key: "rol_usuario", label: "Rol" },
-        { key: "activo", label: "Estado" },
-    ];
-
-    const actions: any[] = [
-        {
-            icon: iconUserMinus,
-            label: "Dar de baja",
-            show: true,
-            onClick: (id: number) => handleDisabledUser(id)
-        },
-        {
-            icon: iconUserPlus,
-            label: "Dar de alta",
-            show: true,
-            onClick: (id: number) => handleEnabledUser(id)
-        }
-    ]
-    
-    const loadingUsers = async (page: number) => {
-        const res = await getAllUsers(page)
-
-        if(!res.ok) return await alert_error.fire({ text: res.message });
-
-        users = res.data.data.map(user => ({
-            ...user,
-            activo: user.activo && user.activo === 1 ? 'Activo' : 'Inactivo' 
-        }));
-        currentPage = res.data.current_page;
-        totalPages = res.data.total_pages;
+    const navToCategoryProducts = () => {
+        push('/admin/categorias-productos');
     }
 
-    const handleReload = async () => {
-        await loadingUsers(currentPage);
-        $reloadUsers = false;
+    const navToUserAdmin = () => {
+        push('/admin/usuarios');
     }
-
-    const handleUserForm = () => {
-        formUserIsOpen = !formUserIsOpen
-    }
-
-    const handleDisabledUser = async (id: number) => {
-        const res = await disabledUser(id);
-
-        if (!res.ok) {
-            return await alert_error.fire({ text: res.message });
-        }
-
-        await success.fire({ text: 'El usuario se dio de baja' });
-        $reloadUsers = true;
-    }
-
-    const handleEnabledUser = async (id: number) => {
-        const res = await enabledUser(id);
-
-        if (!res.ok) {
-            return await alert_error.fire({ text: res.message });
-        }
-
-        await success.fire({ text: 'El usuario se dio de alta' });
-        $reloadUsers = true;
-    }
-
-    $effect(() => {
-        if ($reloadUsers) {
-            handleReload();
-        }
-    })
-
-    onMount(async () => {
-        await loadingUsers(currentPage);
-    })
 </script>
 
-<div class="title-container">
-    <Heading level={3} textAlign="text-start">
+<div class="admin-section">
+    <Heading level={2} textAlign="text-start">
         {#snippet children()}
             Administración
         {/snippet}
     </Heading>
+    <div class="menu-admin">
+        <button onclick={navToCategoryProducts}>
+            <img src={iconCategoryManager} alt="Icono gestión de usuarios">
+            Gestionar categoria de productos
+        </button>
+        <button onclick={navToUserAdmin}>
+            <img src={iconUserManager} alt="Icono gestión de usuarios">
+            Gestionar usuarios
+        </button>
+    </div>
 </div>
-<div class="admin-menu">
-    <Button variant="success" onclick={handleUserForm}>
-        {#snippet icon()}
-            <PlusIcon width={24} height={24} color={colorTextWhite} />
-        {/snippet}
-        {#snippet label()}
-            Generar usuario
-        {/snippet}
-    </Button>
-</div>
-<Table
-    data={users}
-    {currentPage}
-    {totalPages}
-    {columns}
-    {actions}
-    filterActions={filterActionsByActivo}
-    onClick={(page: number) => loadingUsers(page)}
-/>
-
-{#if formUserIsOpen}
-    <FormUser onClose={handleUserForm} />
-{/if}
 
 <style>
-    .title-container {
-        padding: var(--space-2);
+    .admin-section {
+        padding: var(--space-4);
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--space-6);
     }
 
-    .admin-menu {
+
+    .menu-admin {
         display: flex;
-        justify-content: end;
-        align-items: end;
+        flex-direction: column;
+        row-gap: var(--space-2)
+    }
+
+    button {
+        width: 400px;
+        text-align: start;
+        background: none;
+        border: 1px solid var(--color-slate-400);
+        border-radius: var(--radius-button);
         padding: var(--space-4);
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        column-gap: var(--space-4);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    button:hover {
+        box-shadow: var(--shadow-hover);
+    }
+    button:active {
+        box-shadow: var(--shadow-active);
+    }
+
+    img {
+        width: 25px;
     }
 </style>

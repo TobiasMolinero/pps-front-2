@@ -4,14 +4,13 @@
     import iconEye from "@assets/icons/eye-fill.svg";
     import iconTrash from "@assets/icons/trash-fill.svg";
     import iconPencil from "@assets/icons/pencil-fill.svg";
-    import { Heading, Button, PlusIcon, Table } from "@components/ui";
-    import { colorTextWhite } from "@lib/utils/constants";
+    import { Heading, Table } from "@components/ui";
     import {
         columns,
         filterActionsForRow,
     } from "@features/ventas/helpers/sales";
     import FilterOptions from "@features/ventas/components/FilterOptions.svelte";
-    import type { FilterSalesParams } from "@features/ventas/interfaces/interfaces";
+    // import type { FilterSalesParams } from "@features/ventas/interfaces/interfaces";
     import { storeSales, updateSales } from "@features/ventas/store";
     import { alert_error, loading, success, warning } from "@lib/utils/alerts";
     import {
@@ -24,11 +23,18 @@
     import { onMount } from "svelte";
     import { push } from "svelte-spa-router";
     import type { Action } from "@lib/interfaces/actionsmenu";
+    import { capitalize, formatearFecha, formatMoney } from "@lib/formatters";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
     let firstDayOfMonth: string = $state("");
     let currentDay: string = $state("");
+
+    let dateFromInput: string = $state("");
+    let dateToInput: string = $state(new Date().toLocaleDateString('en-CA'));
+    let selectTypeBillInput: number = $state(0);
+    let selectStateInput: string = $state("");
+    let selectUserInput: number = $state(0);
 
     const actions: Action[] = [
         {
@@ -63,32 +69,32 @@
         },
     ];
 
-    const loadingSales = async (page: number) => {
+    // const loadingSales = async (page: number) => {
+    //     const res = await getSales(page, {
+    //         fecha_desde: firstDayOfMonth,
+    //         fecha_hasta: currentDay,
+    //         id_tipo_factura: selectTypeBillInput || undefined,
+    //         id_usuario: selectUserInput || undefined,
+    //         estado: selectStateInput || undefined,
+    //     });
+
+    //     if (!res.ok) return await alert_error.fire({ text: res.message });
+
+    //     $storeSales = res.data.data.map((sale) => ({
+    //         ...sale,
+    //         nro_factura: sale.nro_factura || "-",
+    //         fecha_venta: formatearFecha(sale.fecha_venta.substring(0, 10)),
+    //         usuario: capitalize(sale.usuario),
+    //         estado: capitalize(sale.estado),
+    //         importe_total: formatMoney(sale.importe_total)
+    //     }));
+
+    //     currentPage = res.data.current_page;
+    //     totalPages = res.data.total_pages;
+    // };
+
+    const handleFilter = async (page: number) => {
         const res = await getSales(page, {
-            fecha_desde: firstDayOfMonth,
-            fecha_hasta: currentDay,
-        });
-
-        if (!res.ok) return await alert_error.fire({ text: res.message });
-
-        $storeSales = res.data.data.map((sale) => ({
-            ...sale,
-            nro_factura: sale.nro_factura || "-",
-            fecha_venta: sale.fecha_venta.substring(0, 10),
-        }));
-
-        currentPage = res.data.current_page;
-        totalPages = res.data.total_pages;
-    };
-
-    const handleFilter = async ({
-        dateFromInput,
-        dateToInput,
-        selectTypeBillInput,
-        selectUserInput,
-        selectStateInput,
-    }: FilterSalesParams) => {
-        const res = await getSales(currentPage, {
             fecha_desde: dateFromInput,
             fecha_hasta: dateToInput,
             id_tipo_factura: selectTypeBillInput,
@@ -104,21 +110,34 @@
         $storeSales = res.data.data.map((sale) => ({
             ...sale,
             nro_factura: sale.nro_factura || "-",
-            fecha_venta: sale.fecha_venta.substring(0, 10),
+            fecha_venta: formatearFecha(sale.fecha_venta.substring(0, 10)),
+            usuario: capitalize(sale.usuario),
+            estado: capitalize(sale.estado),
+            importe_total: formatMoney(sale.importe_total)
         }));
 
         currentPage = res.data.current_page;
         totalPages = res.data.total_pages;
     };
 
+    const handleCleanFilter = async () => {
+        dateFromInput = getFirstDayOfCurrentMonth();
+        dateToInput = new Date().toLocaleDateString('en-CA');
+        selectTypeBillInput = 0;
+        selectStateInput = "";
+        selectUserInput = 0;
+
+        await handleFilter(1);
+    }
+
     const handleReload = async () => {
-        await loadingSales(currentPage);
+        await handleFilter(currentPage);
         $updateSales = false;
     };
 
-    const navToNewSale = () => {
-        push("/registrar-venta");
-    };
+    // const navToNewSale = () => {
+    //     push("/registrar-venta");
+    // };
 
     const handleDelete = async (id: number) => {
         console.log(id)
@@ -137,7 +156,7 @@
             return;
         }
 
-        await success.fire({ text: "El producto fue eliminado correctamente." });
+        await success.fire({ text: "La venta fue eliminada correctamente." });
 
         if ($storeSales.length === 1 && currentPage > 1) {
             currentPage--;
@@ -156,6 +175,10 @@
     }
 
     const handleAnularFactura = async (id: number) => {
+        const resolve = await warning.fire({ text: '¿Está seguro que desea anular la factura?' });
+
+        if (!resolve.isConfirmed) return;
+
         loading.fire();
         const res = await anularFactura(id);
         if(!res.ok) return await alert_error.fire({ text: res.message });
@@ -172,8 +195,8 @@
 
     onMount(async () => {
         firstDayOfMonth = getFirstDayOfCurrentMonth();
-        currentDay = new Date().toISOString().split("T")[0];
-        await loadingSales(currentPage);
+        currentDay = new Date().toLocaleDateString('en-CA');
+        await handleFilter(1);
     });
 </script>
 
@@ -185,15 +208,23 @@
     </Heading>
 </div>
 <div class="ventas-menu">
-    <FilterOptions onFilter={handleFilter} />
-    <Button variant="success" onclick={navToNewSale}>
+    <FilterOptions
+        bind:dateFromInput
+        bind:dateToInput
+        bind:selectTypeBillInput
+        bind:selectStateInput
+        bind:selectUserInput
+        onFilter={() => handleFilter(1)}
+        onCleanFilter={handleCleanFilter}
+    />
+    <!-- <Button variant="success" onclick={navToNewSale}>
         {#snippet icon()}
             <PlusIcon width={24} height={24} color={colorTextWhite} />
         {/snippet}
         {#snippet label()}
             Registrar venta
         {/snippet}
-    </Button>
+    </Button> -->
 </div>
 <Table
     {columns}
@@ -202,7 +233,7 @@
     {currentPage}
     {totalPages}
     filterActions={filterActionsForRow}
-    onClick={(page: number) => console.log(page)}
+    onClick={(page: number) => handleFilter(page)}
 />
 
 <style>
@@ -214,6 +245,7 @@
         display: flex;
         justify-content: space-between;
         align-items: end;
+        column-gap: var(--space-8);
         padding: var(--space-4);
     }
 </style>

@@ -11,45 +11,41 @@
     import { getFirstDayOfCurrentMonth } from "../helpers/helpers";
 
     interface Props {
-        onFilter: (event: FilterSalesParams) => void
+        dateFromInput: string
+        dateToInput: string
+        selectTypeBillInput: number
+        selectStateInput: string
+        selectUserInput: number
+        onFilter: () => void
+        onCleanFilter: () => void
     }
 
-    let { onFilter }: Props = $props();
+    let {
+        dateFromInput = $bindable(""),
+        dateToInput = $bindable(new Date().toISOString().split('T')[0]),
+        selectTypeBillInput = $bindable(0),
+        selectStateInput = $bindable(''),
+        selectUserInput = $bindable(0),
+        onFilter,
+        onCleanFilter
+    }: Props = $props();
 
     let disabledButton: boolean = $state(true);
     let showCleanButton: boolean = $state(false);
-    let dateFromInput: string = $state("");
-    let dateToInput: string = $state(new Date().toISOString().split('T')[0]);
-    let selectTypeBillInput: number = $state(0);
-    let selectStateInput: string = $state("");
-    let selectUserInput: number = $state(0);
+    // let dateFromInput: string = $state("");
+    // let dateToInput: string = $state(new Date().toISOString().split('T')[0]);
+    // let selectTypeBillInput: number = $state(0);
+    // let selectStateInput: string = $state("");
+    // let selectUserInput: number = $state(0);
     let usersOptions: {id: number, usuario: string}[] = $state([]);
 
     const handleSubmit = (e: Event) => {
         e.preventDefault();
-        onFilter?.({
-            dateFromInput,
-            dateToInput,
-            selectTypeBillInput,
-            selectStateInput,
-            selectUserInput,
-        });
+        onFilter?.();
     }
     
     const handleClean = () => {
-        dateFromInput = getFirstDayOfCurrentMonth();
-        dateToInput = new Date().toISOString().split('T')[0];
-        selectTypeBillInput = 0;
-        selectStateInput = "";
-        selectUserInput = 0;
-
-        onFilter?.({
-            dateFromInput: getFirstDayOfCurrentMonth(),
-            dateToInput: new Date().toISOString().split('T')[0],
-            selectTypeBillInput: 0,
-            selectStateInput: "",
-            selectUserInput: 0,
-        });
+        onCleanFilter?.();
     }
 
     $effect(() => {
@@ -126,7 +122,8 @@
 
 <style>
     .form {
-        flex: 1;
+        flex-grow: 1;
+        flex-shrink: 1;
         display: flex;
         align-items: end;
         gap: var(--space-4);

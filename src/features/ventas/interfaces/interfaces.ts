@@ -112,3 +112,16 @@ export interface ResponseGetAllSales {
     total_pages: number
     total_items: number
 }
+
+export interface GenerateTicketRequestData {
+    nro_factura: number,
+    factura: number,
+    fecha: string,
+    total: number,
+    detalle_venta: {
+        cod_producto: string,
+        nombre_producto: string,
+        precio: number,
+        cantidad: number,
+    }[]
+}

@@ -25,7 +25,7 @@
 
     /* SLATE */
     --color-slate-950: #020618;
-    --color-slate-900: #0f172b;
+    --color-slate-900: rgb(15, 23, 43);
     --color-slate-800: #1d293d;
     --color-slate-700: #314158;
     --color-slate-600: #45556c;

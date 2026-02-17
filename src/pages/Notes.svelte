@@ -2,7 +2,7 @@
     import { Heading, Table } from "@components/ui";
     import { getNotas } from "@features/notas/helpers/notas";
     import { storeNotes } from "@features/notas/store";
-    import { formatMoney } from "@lib/formatters";
+    import { formatearFecha, formatMoney } from "@lib/formatters";
     import { alert_error } from "@lib/utils/alerts";
     import { onMount } from "svelte";
 
@@ -25,7 +25,7 @@
         const data = res.data.data;
         $storeNotes = data.map(nota => ({
             ...nota,
-            fecha: nota.fecha.substring(0, 10),
+            fecha: formatearFecha(nota.fecha.substring(0, 10)),
             importe_total: formatMoney(String(nota.importe_total))
         }));
     }

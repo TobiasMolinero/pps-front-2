@@ -1,6 +1,5 @@
 import { pop, push } from "svelte-spa-router";
 import { get, writable } from "svelte/store";
-import { isAuthenticated } from "./auth";
 
 export const skipNextRouteCheck = writable(false); 
 
@@ -13,10 +12,13 @@ const appRoutes = [
     '/detalle-venta',
     '/notas-credito',
     '/mi-perfil',
-    '/admin'
+    '/admin',
+    '/admin/usuarios',
+    '/admin/categorias-productos',
 ];
 
-export function handleRoutes(route: string, userRole?: string) {
+export async function handleRoutes(route: string, userRole?: string) {
+
     if(get(skipNextRouteCheck)) {
         skipNextRouteCheck.set(false);
         return;

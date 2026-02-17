@@ -13,10 +13,10 @@ const baseNavOptions = [
     { src: iconSells, label: 'Ventas', route: '/ventas' },
     { src: iconNotaCredito, label: 'Facturas anuladas', route: '/notas-credito' },
     { src: iconProducts, label: 'Productos', route: '/productos' },
-    { src: iconAdmin, label: 'Admin', route: '/admin'}
+    { src: iconAdmin, label: 'Administración', route: '/admin'}
 ]
 
 export const storeNavOptions = derived(user, ($user) => {
     if ($user?.rol_usuario === 'admin') return baseNavOptions;
-    return baseNavOptions.filter(opt => opt.label !== 'Admin');
+    return baseNavOptions.filter(opt => opt.label !== 'Administración');
 }) 

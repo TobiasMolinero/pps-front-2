@@ -56,7 +56,7 @@ http.interceptors.response.use(
         return http(originalRequest); // 🔁 reintentar la request original
       } catch (err: any) {
         isRefreshing = false
-        if (err.response?.status === 401) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
           user.set(null)
           isAuthenticated.set(false)
           await warning.fire({ text: 'La sesión expiró. Vuelva a iniciar sesión.', showCancelButton: false })
