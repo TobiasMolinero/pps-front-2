@@ -20,6 +20,10 @@ export interface ResponseGetOneProduct {
     data: Product[]
 }
 
+export interface ResponseGetOneCategory {
+    data: ProductCategory[]
+}
+
 export interface ProductCategory {
     [key: string]: string | number | boolean
     id: number
@@ -28,6 +32,13 @@ export interface ProductCategory {
 
 export interface ResponseGetAllCategories {
     data: ProductCategory[]
+}
+
+export interface ResponseGetAllCategoriesPagination {
+    data: ProductCategory[]
+    current_page: number
+    total_pages: number
+    total_items: number
 }
 
 export interface ProductFormErrors {

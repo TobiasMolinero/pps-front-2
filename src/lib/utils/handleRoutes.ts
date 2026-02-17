@@ -4,6 +4,7 @@ import { get, writable } from "svelte/store";
 export const skipNextRouteCheck = writable(false); 
 
 const appRoutes = [
+    '/',
     '/dashboard',
     '/productos',
     '/ventas',
@@ -18,6 +19,10 @@ const appRoutes = [
 ];
 
 export async function handleRoutes(route: string, userRole?: string) {
+    if(route === '/') {
+        push('/dashboard');
+        return;
+    }
 
     if(get(skipNextRouteCheck)) {
         skipNextRouteCheck.set(false);

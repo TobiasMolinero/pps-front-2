@@ -1,6 +1,7 @@
 export const apiRoutes = {
     products: '/productos',
     all_categories: '/categorias-productos/',
+    all_categories_pagination: '/categorias-productos/all-categories',
     login: '/auth/login',
     refresh_token: '/auth/refresh-token',
     forgot_password: '/auth/forgot-password',

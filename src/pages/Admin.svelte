@@ -49,7 +49,7 @@
     button {
         width: 400px;
         text-align: start;
-        background: none;
+        background-color: white;
         border: 1px solid var(--color-slate-400);
         border-radius: var(--radius-button);
         padding: var(--space-4);
