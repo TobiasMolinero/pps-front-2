@@ -5,6 +5,8 @@ import { safeApiRequest } from "@lib/api/safeApiRequest";
 import type { Action } from "@lib/interfaces/actionsmenu";
 import { user } from "@lib/utils/auth";
 import { get } from "svelte/store";
+import * as XLSX from 'xlsx';
+import { products } from "../store";
 
 export async function getProducts(
     page: number,
@@ -114,4 +116,31 @@ export const filterActionsProductsByRol = (row: any, actions: Action[]): Action[
     }
 
     return actions;
+}
+
+
+export function exportProductsExcel(){
+  let data = processDataProducts(get(products));
+  // Crear un nuevo libro de trabajo
+  const workbook = XLSX.utils.book_new();
+  // Convertir los datos a una hoja de cálculo
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  // Agregar la hoja al libro
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Lista de precios');
+  // Generar un archivo Excel y descargarlo
+  XLSX.writeFile(workbook, 'lista_precios.xlsx');
+}
+
+function processDataProducts(data: any[]){
+  let productos = data.map(producto => {
+    return {
+      "Cod. Producto": producto.cod_producto,
+      "Nombre producto": producto.nombre_producto,
+      "Categoría": producto.categoria_producto,
+      "Precio": producto.precio,
+      "stock": producto.stock
+    }
+  })
+
+  return productos
 }

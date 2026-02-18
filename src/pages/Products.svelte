@@ -15,6 +15,7 @@
     import type { Action } from "@lib/interfaces/actionsmenu";
     import {
         deleteProduct,
+        exportProductsExcel,
         filterActionsProductsByRol,
         getCategories,
         getProducts,
@@ -24,6 +25,7 @@
     import FilterOptions from "@features/productos/components/FilterOptions.svelte";
     import { alert_error, loading, success, warning } from "@lib/utils/alerts";
     import { user } from "@lib/utils/auth";
+    import ExcelIcon from "@components/ui/atoms/DynamicIcons/ExcelIcon.svelte";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
@@ -77,26 +79,6 @@
         formStockIsOpen = !formStockIsOpen;
         productID = id;
     };
-
-    // const loadingProducts = async (page: number) => {
-    //     const res = await getProducts(page);
-
-    //     if (!res.ok) {
-    //         alert_error.fire({ text: res.message });
-    //         return;
-    //     }
-
-    //     $products = res.data.data.map((product) => {
-    //         return {
-    //             ...product,
-    //             descripcion: product.descripcion || "-",
-    //             stock: product.stock || 0,
-    //             precio: formatMoney(String(product.precio)),
-    //         };
-    //     });
-    //     currentPage = res.data.current_page;
-    //     totalPages = res.data.total_pages;
-    // };
 
     const handleFilter = async (page: number) => {
         const res = await getProducts(page, {
@@ -199,16 +181,26 @@
         onFilter={() => handleFilter(1)}
         onCleanFilter={handleCleanFilter}
     />
-    {#if $user?.rol_usuario === 'admin'}    
-        <Button variant="success" onclick={handleProductForm}>
+    <div>
+        <Button variant="primary" type="button" onclick={exportProductsExcel}>
             {#snippet icon()}
-                <PlusIcon width={24} height={24} color={colorTextWhite} />
+                <ExcelIcon />
             {/snippet}
             {#snippet label()}
-                Nuevo producto
+                Exportar excel
             {/snippet}
         </Button>
-    {/if}
+        {#if $user?.rol_usuario === 'admin'}    
+            <Button variant="success" onclick={handleProductForm}>
+                {#snippet icon()}
+                    <PlusIcon width={24} height={24} color={colorTextWhite} />
+                {/snippet}
+                {#snippet label()}
+                    Nuevo producto
+                {/snippet}
+            </Button>
+        {/if}
+    </div>
 </div>
 <Table
     {columns}

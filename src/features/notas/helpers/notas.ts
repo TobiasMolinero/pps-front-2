@@ -1,6 +1,9 @@
 import { apiRoutes } from "@lib/api/endpoints";
 import { safeApiRequest } from "@lib/api/safeApiRequest";
 import type { ResponseGetAllNotes } from "../interfaces/interfaces";
+import * as XLSX from 'xlsx';
+import { storeNotes } from "../store";
+import { get } from "svelte/store";
 
 export async function getNotas(
     page: number,
@@ -16,4 +19,32 @@ export async function getNotas(
 
     const response = await safeApiRequest<ResponseGetAllNotes>('get', `${apiRoutes.notas}?${params.toString()}`);
     return response;
+}
+
+export function exportNotesExcel(){
+  let data = processDataNotes(get(storeNotes));
+  // Crear un nuevo libro de trabajo
+  const workbook = XLSX.utils.book_new();
+  // Convertir los datos a una hoja de cálculo
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  // Agregar la hoja al libro
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Lista facturas anuladas');
+  // Generar un archivo Excel y descargarlo
+  XLSX.writeFile(workbook, 'lista_notas.xlsx');
+}
+
+function processDataNotes(data: any[]){
+  let notes = data.map(nota => {
+    return {
+      "# ID": nota.id,
+      "Nro. Nota": nota.nro_nota,
+      "Tipo nota": nota.tipo_nota,
+      "Factura asociada": nota.nro_factura,
+      "Importe total": nota.importe_total,
+      "CAE": nota.cae,
+      "Fecha vto. CAE": nota.vto_cae
+    }
+  })
+
+  return notes
 }

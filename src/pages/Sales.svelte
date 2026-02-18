@@ -4,9 +4,10 @@
     import iconEye from "@assets/icons/eye-fill.svg";
     import iconTrash from "@assets/icons/trash-fill.svg";
     import iconPencil from "@assets/icons/pencil-fill.svg";
-    import { Heading, Table } from "@components/ui";
+    import { Button, Heading, Table } from "@components/ui";
     import {
         columns,
+        exportSalesExcel,
         filterActionsForRow,
     } from "@features/ventas/helpers/sales";
     import FilterOptions from "@features/ventas/components/FilterOptions.svelte";
@@ -24,6 +25,8 @@
     import { push } from "svelte-spa-router";
     import type { Action } from "@lib/interfaces/actionsmenu";
     import { capitalize, formatearFecha, formatMoney } from "@lib/formatters";
+    import ExcelIcon from "@components/ui/atoms/DynamicIcons/ExcelIcon.svelte";
+    import { updateNotes } from "@features/notas/store";
 
     let currentPage: number = $state(1);
     let totalPages: number = $state(1);
@@ -115,7 +118,7 @@
             estado: capitalize(sale.estado),
             importe_total: formatMoney(sale.importe_total)
         }));
-
+        console.log($storeSales)
         currentPage = res.data.current_page;
         totalPages = res.data.total_pages;
     };
@@ -185,6 +188,7 @@
 
         await success.fire({ text: 'La factura fue anulada. Se creo una nota de crédito por esta operación' });
         $updateSales = true;
+        $updateNotes = true;
     }
 
     $effect(() => {
@@ -217,15 +221,17 @@
         onFilter={() => handleFilter(1)}
         onCleanFilter={handleCleanFilter}
     />
-    <!-- <Button variant="success" onclick={navToNewSale}>
+</div>
+<!-- <div class="menu-export">
+    <Button variant="primary" type="button" onclick={exportSalesExcel}>
         {#snippet icon()}
-            <PlusIcon width={24} height={24} color={colorTextWhite} />
+            <ExcelIcon />
         {/snippet}
         {#snippet label()}
-            Registrar venta
+            Exportar excel
         {/snippet}
-    </Button> -->
-</div>
+    </Button>
+</div> -->
 <Table
     {columns}
     data={$storeSales}
@@ -248,4 +254,8 @@
         column-gap: var(--space-8);
         padding: var(--space-4);
     }
+
+    /* .menu-export {
+        padding: var(--space-2) var(--space-4);
+    } */
 </style>

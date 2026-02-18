@@ -1,5 +1,8 @@
 import type { Action } from "@lib/interfaces/actionsmenu";
 import type { BillType } from "../interfaces/interfaces";
+import * as XLSX from 'xlsx';
+import { get } from "svelte/store";
+import { storeSales } from "../store";
 
 export const columns = [
     { key: "id", label: "# ID" },
@@ -72,3 +75,33 @@ export const paymentMethodsOptions = [
     { label: "Tarjeta de crédito/débito", value: 'tarjeta' },
     { label: "Transferencia bancaria", value: 'transferencia' }
 ]
+
+export function exportSalesExcel(){
+  let data = processDataSales(get(storeSales));
+  // Crear un nuevo libro de trabajo
+  const workbook = XLSX.utils.book_new();
+  // Convertir los datos a una hoja de cálculo
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  // Agregar la hoja al libro
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Lista ventas');
+  // Generar un archivo Excel y descargarlo
+  XLSX.writeFile(workbook, 'lista_ventas.xlsx');
+}
+
+function processDataSales(data: any[]){
+  let sales = data.map(venta => {
+    return {
+      "# ID": venta.id,
+      "Estado": venta.estado,
+      "Nro. factura": venta.nro_factura,
+      "Tipo venta": venta.tipo_factura,
+      "Fecha venta": venta.fecha_venta,
+      "Importe total": venta.importe_total,
+      "CAE": venta.cae,
+      "Fecha vto. CAE": venta.vto_cae,
+      "Vendedor": venta.usuario
+    }
+  })
+
+  return sales
+}

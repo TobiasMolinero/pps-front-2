@@ -96,7 +96,7 @@
 <div class="title-container">
     <Heading level={2} textAlign="text-start">
         {#snippet children()}
-            Productos
+            Gestión categorias de productos
         {/snippet}
     </Heading>
 </div>
@@ -137,7 +137,7 @@
 
     .products-menu {
         display: flex;
-        justify-content: space-between;
+        justify-content: end;
         align-items: end;
         padding: var(--space-4);
     }

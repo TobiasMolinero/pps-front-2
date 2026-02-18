@@ -97,7 +97,7 @@
 <div class="title-container">
     <Heading level={3} textAlign="text-start">
         {#snippet children()}
-            Administración
+            Gestión de usuarios
         {/snippet}
     </Heading>
 </div>
