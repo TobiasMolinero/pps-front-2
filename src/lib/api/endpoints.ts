@@ -16,5 +16,6 @@ export const apiRoutes = {
     edit_user: '/auth/edit-user/',
     sales: '/ventas',
     anular_factura: '/ventas/anular-factura/',
-    notas: '/notas'
+    notas: '/notas',
+    dashboard: '/dashboard'
 }

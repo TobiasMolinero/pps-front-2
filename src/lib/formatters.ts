@@ -1,5 +1,5 @@
 export const formatMoney = (value: string) => {
-  const numberValue = parseFloat(value.replace(/[^0-9]/g, ''));
+  const numberValue = parseFloat(value.replace(/[^0-9.-]/g, ''));
 
   if (!isNaN(numberValue)) {
     return value = parseMoney(numberValue);
@@ -9,7 +9,7 @@ export const formatMoney = (value: string) => {
 };
 
 const parseMoney = (value: number) => {
-  let formatValue: string = (value / 100).toLocaleString('es-AR', {
+  let formatValue: string = value.toLocaleString('es-AR', {
     style: 'currency',
     currency: 'ARS',
     maximumFractionDigits: 2,

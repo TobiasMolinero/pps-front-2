@@ -52,7 +52,7 @@
     </div>
     <div class="user-button">
         <button onclick={handleDropdown} bind:this={buttonElement}>
-            {$user?.nombre}
+            {$user?.nombre + ' ' + $user?.apellido}
             <img src={iconUser} alt="Icono de usuario">
         </button>
     </div>

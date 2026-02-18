@@ -109,6 +109,7 @@
             await alert_error.fire({ text: res.message });
             return;
         }
+        console.log(res.data.data)
 
         $storeSales = res.data.data.map((sale) => ({
             ...sale,

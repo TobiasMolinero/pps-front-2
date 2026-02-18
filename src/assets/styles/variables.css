@@ -43,9 +43,9 @@
     --color-red-400: #ff6467;
 
     /* YELLOW */
-    --color-yellow-500: #f0b100;
+    --color-yellow-500: rgb(240, 177, 0);
     --color-yellow-400: #fdc700;
-    --color-yellow-300: #ffdf20;
+    --color-yellow-300: rgb(255, 223, 32);
     --color-yellow-200: #fff085;
     
     /* GREEN */
