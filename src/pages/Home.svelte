@@ -63,7 +63,6 @@
     })
 </script>
 
-<div class="section-container">
     <div class="header">
         <Heading level={2} textAlign="text-start">
             {#snippet children()}
@@ -96,6 +95,7 @@
             </button>
         {/if}
         <div class="card table-card">
+            <p>Ventas del mes</p>
             <table>
                 <thead>
                     <tr>
@@ -122,10 +122,10 @@
             </table>
         </div>
         {#if isProductsSinStock}        
-            <button class="card sin-facturar-card" onclick={navToProducts}>
+            <button class="card sin-stock-card" onclick={navToProducts}>
                 <img src={iconWarningRed} alt="Icono warning">
                 <div>
-                    <p>¡Hay productos sin stock o stock bajo!</p>
+                    <p>¡Hay productos sin stock/stock bajo!</p>
                     <span>
                         Ir a productos
                     </span>
@@ -133,22 +133,24 @@
             </button>
         {/if}
     </div>
-</div>
 
 <style>
 
-    .section-container {
+    /* .section-container {
+        flex: 1;
+        min-height: 0;
         display: flex;
         flex-direction: column;
         gap: var(--space-2);
-    }
+    } */
 
     .header {
         padding: var(--space-4);
     }
 
     .section-cards {
-        background: red;
+        flex: 1;
+        min-height: 0;
         padding: var(--space-4);
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -165,6 +167,7 @@
         justify-content: start;
         align-items: center;
         column-gap: var(--space-4);
+        min-height: 150px;
     }
     .card:hover {
         box-shadow: var(--shadow-hover);
@@ -193,28 +196,46 @@
         row-gap: var(--space-2);
     }
 
-    .sin-facturar-card {
+    .sin-facturar-card, .sin-stock-card {
         display: flex;
         row-gap: var(--space-2);
         cursor: pointer;
     }
-    .sin-facturar-card img {
+    .sin-facturar-card img, .sin-stock-card img {
         width: 50px;
     }
-    .sin-facturar-card span {
-        font-size: 1rem;
+    .sin-facturar-card span, .sin-stock-card span {
+        font-size: 0.8rem;
         text-decoration: underline;
         cursor: pointer;
     }
-    .sin-facturar-card div {
+    .sin-facturar-card div, .sin-stock-card div {
         display: flex;
         flex-direction: column;
         row-gap: var(--space-2);
+    }
+
+    .sin-stock-card {
+        place-self: start;
+        width: 100%;
+    }
+    .sin-stock-card p {
+        font-size: 1rem;
+        font-weight: 500;
     }
     
     .table-card {
         grid-column: span 2;
         overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        row-gap: var(--space-2);
+    }
+
+    .table-card p {
+        font-size: 1rem;
+        font-weight: 600;
     }
 
     .table-card table {
@@ -222,5 +243,6 @@
     }
     .table-card thead th {
         text-align: start;
+        border-bottom: 1px solid var(--color-slate-400);
     }
 </style>
