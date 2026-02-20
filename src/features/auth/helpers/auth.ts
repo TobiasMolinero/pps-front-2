@@ -2,6 +2,8 @@ import { apiRoutes } from "@lib/api/endpoints";
 import { safeApiRequest } from "@lib/api/safeApiRequest";
 import type { GetUsersResponse, UserForm } from "../interfaces/interfaces";
 import type { Action } from "@lib/interfaces/actionsmenu";
+import { get } from "svelte/store";
+import { user } from "@lib/utils/auth";
 
 export async function getAllUsers(page: number) {
     const params = new URLSearchParams();
@@ -26,11 +28,18 @@ export async function enabledUser(id: number) {
     return response;
 }
 
-export const filterActionsByActivo = (row: any, actions: Action[]): Action[] => {
+export const filterActionsUser = (row: any, actions: Action[]): Action[] => {
+    if(row.id === get(user)?.id) {
+        return actions.map(a => ({
+            ...a,
+            show: false,
+        }))
+    }
+
     if (row.activo === 'Activo') {
         return actions.map(a => ({
             ...a,
-            show: ["Dar de baja", "Cambiar contraseña"].includes(a.label),
+            show: ["Dar de baja"].includes(a.label),
         }));
     }
 

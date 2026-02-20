@@ -71,10 +71,12 @@
         </Heading>
     </div>
     <div class="section-cards">
-        <div class="card total-card">
-            <p>Monto total de ventas en {actualMonth}</p>
-            <span>{formatMoney(String(totalVentas))}</span>
-        </div>
+        {#if $user?.rol_usuario === 'admin'}
+            <div class="card total-card">
+                <p>Monto total de ventas en {actualMonth}</p>
+                <span>{formatMoney(String(totalVentas))}</span>
+            </div>
+        {/if}
         <div class="card top-products-card">
             <p>Productos más vendidos</p>
             <ul>
@@ -90,6 +92,17 @@
                     <p>¡Hay ventas sin facturar!</p>
                     <span>
                         Ir a ventas
+                    </span>
+                </div>
+            </button>
+        {/if}
+        {#if (isProductsSinStock && $user?.rol_usuario === 'vendedor') || (!isVentasSinFacturar && $user?.rol_usuario === 'admin')}        
+            <button class="card sin-stock-card" onclick={navToProducts}>
+                <img src={iconWarningRed} alt="Icono warning">
+                <div>
+                    <p>¡Hay productos sin stock/stock bajo!</p>
+                    <span>
+                        Ir a productos
                     </span>
                 </div>
             </button>
@@ -121,7 +134,7 @@
                 </tbody>
             </table>
         </div>
-        {#if isProductsSinStock}        
+        {#if isProductsSinStock && $user?.rol_usuario === 'admin' && isVentasSinFacturar}        
             <button class="card sin-stock-card" onclick={navToProducts}>
                 <img src={iconWarningRed} alt="Icono warning">
                 <div>
@@ -177,6 +190,7 @@
         display: flex;
         flex-direction: column;
         align-items: start;
+        justify-content: center;
         row-gap: var(--space-2)
     }
     .total-card p, .top-products-card p, .sin-facturar-card p {

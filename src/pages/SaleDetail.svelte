@@ -103,14 +103,23 @@
                     </table>
                 </div>
                 <footer>
-                    <Button variant="primary" type="button" onclick={handleGenerateBill}>
-                        {#snippet icon()}
-                            <Icon src={iconPrint} />
-                        {/snippet}
-                        {#snippet label()}
-                            Generar comprobante
-                        {/snippet}
-                    </Button>
+                    <div style="flex: 1;">
+                        {#if item.estado === 'emitida'}
+                            <Button variant="primary" type="button" onclick={handleGenerateBill}>
+                                {#snippet icon()}
+                                    <Icon src={iconPrint} />
+                                {/snippet}
+                                {#snippet label()}
+                                    Generar comprobante
+                                {/snippet}
+                            </Button>
+                        {/if}
+                        {#if item.estado === 'anulada'}
+                            <p class="text-anulada">
+                                FACTURA ANULADA
+                            </p>
+                        {/if}
+                    </div>
                     <div class="importes">
                         <div>
                             <span class="text-slate-800 font-[700]">Sub Total:</span>
@@ -263,14 +272,14 @@
 
     footer {
         display: flex;
-        justify-content: space-between;
+        justify-content: start;
         align-items: end;
     }
 
     .importes {
-        /* flex-col *:pt-[10px] *:flex *:justify-end *:items-end *:gap-x-[40px] */
         display: flex;
         flex-direction: column;
+        align-self: end;
     } 
     .importes > div {
         padding-top: 10px;
@@ -278,5 +287,11 @@
         justify-content: end;
         align-items: end;
         column-gap: 40px;
+    }
+
+    .text-anulada {
+        place-self: center;
+        font-size: 1.6rem;
+        font-weight: 600;
     }
 </style>

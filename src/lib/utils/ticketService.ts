@@ -12,6 +12,8 @@ export async function openTicketInNewTab(id_venta: number) {
 
   const blob = new Blob([res.data], { type: "application/pdf" });
   const pdfUrl = URL.createObjectURL(blob);
+  console.log(blob)
+  console.log(pdfUrl);
   window.open(pdfUrl, "_blank");
 }
 

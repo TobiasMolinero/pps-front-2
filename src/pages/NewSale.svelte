@@ -10,7 +10,7 @@
     import type { FormSaleData, SelectProduct } from "@features/ventas/interfaces/interfaces";
     import { onMount } from "svelte";
     import { addDetailToStore, calculateIva, calculateSubTotal, calculateTotal, createSale, editSale, facturarVenta, getDataOneSale, prepareRequestData } from "@features/ventas/helpers/helpers";
-    import { alert_error, loading, question, success } from "@lib/utils/alerts";
+    import { alert_error, loading, loadingTicket, question, success } from "@lib/utils/alerts";
     import { querystring, push, location } from 'svelte-spa-router'
     import { openTicketInNewTab } from "@lib/utils/ticketService";
 
@@ -86,6 +86,8 @@
             domicilio_cliente: inputAddress.trim(),
         }
 
+        loading.fire();
+
         const requestData = prepareRequestData(formSaleData);
         const res = await createSale(requestData);
         
@@ -104,7 +106,9 @@
 
             success.fire({ text: 'La venta fue facturada con éxito' });
             
+            loadingTicket.fire();
             await openTicketInNewTab(saleID);
+            success.fire({ text: 'Ticket generado exitosamente' });
         }
 
         $updateSales = true;

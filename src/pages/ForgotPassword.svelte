@@ -1,10 +1,12 @@
 <script lang="ts">
-    import { Button, Heading, Input } from "@components/ui";
+    import { Button, Heading, Input, Tooltip } from "@components/ui";
     import logo from '@assets/images/herramientas.webp';
     import { push } from "svelte-spa-router";
     import { safeApiRequest } from "@lib/api/safeApiRequest";
     import { apiRoutes } from "@lib/api/endpoints";
     import { alert_error, loading, info } from "@lib/utils/alerts";
+    import iconArrow from '@assets/icons/caret-left-bold.svg'
+    import Icon from "@components/ui/atoms/Icon.svelte";
 
     let inputValue: string = $state('');
     let inputError: string = $state('');
@@ -35,6 +37,17 @@
 
 <div class="background">
     <div class="container">
+        <div style="align-self: start;">
+            <Tooltip position="top" label="Volver atras">
+                {#snippet children()}    
+                    <Button variant="secondary" onclick={backToLogin}>
+                        {#snippet icon()}
+                            <Icon src={iconArrow} width="15px"/>
+                        {/snippet}
+                    </Button>
+                {/snippet}
+            </Tooltip>
+        </div>
         <header>
             <div class="container-logo">
                 <img class="logo-img" src={logo} alt="Logo de Management Tool's">

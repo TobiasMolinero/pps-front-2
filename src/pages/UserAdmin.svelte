@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Button, Heading, PlusIcon, Table } from "@components/ui";
-    import { disabledUser, enabledUser, filterActionsByActivo, getAllUsers } from "@features/auth/helpers/auth";
+    import { disabledUser, enabledUser, filterActionsUser, getAllUsers } from "@features/auth/helpers/auth";
     import type { UserData } from "@features/auth/interfaces/interfaces";
     import { alert_error, success } from "@lib/utils/alerts";
     import { onMount } from "svelte";
@@ -117,7 +117,7 @@
     {totalPages}
     {columns}
     {actions}
-    filterActions={filterActionsByActivo}
+    filterActions={filterActionsUser}
     onClick={(page: number) => loadingUsers(page)}
 />
 

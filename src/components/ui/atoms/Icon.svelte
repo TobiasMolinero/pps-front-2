@@ -2,17 +2,18 @@
     interface Props {
         src: string
         alt?: string
+        width?: string
     };
 
-    let { src, alt }: Props = $props();
+    let { src, alt, width }: Props = $props();
 </script>
 
-<img src={src} alt={alt}>
+<img src={src} alt={alt} style={`width: ${width ? width : 'var(--icon-size)'}`}>
 
 <style>
     img {
         display: inline-block;
         vertical-align: middle;
-        width: var(--icon-size);
+        /* width: var(--icon-size); */
     }
 </style>

@@ -146,7 +146,7 @@
     const handleDelete = async (id: number) => {
         console.log(id)
         const alertResolve = await warning.fire({
-            text: "¿Está seguro que desea eliminar este producto?",
+            text: "¿Está seguro que desea eliminar esta venta?",
         });
 
         if (!alertResolve.isConfirmed) return;

@@ -12,6 +12,7 @@
   }
 
   let { actions = [] }: Props = $props();
+  const visibleActions = $derived(actions.filter(a => a.show));
 
   let menuElement: HTMLDivElement;
   let open: boolean = $state(false);
@@ -22,7 +23,7 @@
     if (open) {
       closing = true;
 
-      const totalDuration = 200 + (actions.length - 1) * 30;
+      const totalDuration = 200 + (visibleActions.length - 1) * 30;
       setTimeout(() => {
         open = false;
         closing = false;
@@ -53,7 +54,7 @@
     const spaceBelow =
       parentVisibleHeight - (relativeTop + menuElement.offsetHeight);
 
-    const estimatedMenuHeight = actions.length * 50 + 10;
+    const estimatedMenuHeight = visibleActions.length * 50 + 10;
 
     direction =
       spaceAbove < estimatedMenuHeight && spaceBelow > spaceAbove
@@ -74,30 +75,32 @@
   });
 </script>
 
-<div bind:this={menuElement} class="actions-menu" data-direction={direction}>
-  <ToggleMenu onclick={toggleMenu} {open} />
+{#if visibleActions.length}  
+  <div bind:this={menuElement} class="actions-menu" data-direction={direction}>
+    <ToggleMenu onclick={toggleMenu} {open} />
 
-  <ul class="menu-list" class:open class:closing>
-    {#each actions as action, i (action.label)}
-      {#if action.show}
-        <li>
-          <Tooltip label={action.label} position="left">
-            <button
-              type="button"
-              class="menu-item"
-              class:open
-              style="--delay: {(actions.length - i) *
-                30}ms;  --reverse-delay: {i * 30}ms;"
-              onclick={() => handleAction(action)}
-            >
-              <Icon src={action.icon} />
-            </button>
-          </Tooltip>
-        </li>
-      {/if}
-    {/each}
-  </ul>
-</div>
+    <ul class="menu-list" class:open class:closing>
+      {#each visibleActions as action, i (action.label)}
+        {#if action.show}
+          <li>
+            <Tooltip label={action.label} position="left">
+              <button
+                type="button"
+                class="menu-item"
+                class:open
+                style="--delay: {(actions.length - i) *
+                  30}ms;  --reverse-delay: {i * 30}ms;"
+                onclick={() => handleAction(action)}
+              >
+                <Icon src={action.icon} />
+              </button>
+            </Tooltip>
+          </li>
+        {/if}
+      {/each}
+    </ul>
+  </div>
+{/if}
 
 <style>
   .actions-menu {

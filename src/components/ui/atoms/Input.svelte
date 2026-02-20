@@ -28,46 +28,36 @@
         const target = e.target as HTMLInputElement;
         let inputValue = target.value;
 
-        if(error !== '') error = '';
+        if (error) error = "";
 
         if (format === "dni") {
             value = formatDNI(inputValue);
             return;
         }
 
-        if(format === 'cuil') {
-            value = formatCUIL(inputValue)
-        }
-
-        if (format === "money") {
-            value = formatMoney(inputValue);
+        if (format === "cuil") {
+            value = formatCUIL(inputValue);
             return;
         }
-    };
 
+        // if (format === "money") {
+        //     const formatted = formatMoney(inputValue);
+        //     if (formatted !== value) value = formatted;
+        //     return;
+        // }
+
+        value = inputValue;
+    };
     const togglePassword = () => {
         showPassword = !showPassword;
     };
 
     $effect(() => {
-        inputType = type === "password" && showPassword ? "text" : type;
-
-        if(error !== '') error = '';
-
-        if (format === "dni") {
-            value = formatDNI(String(value));
+        if (type !== "password") {
+            inputType = type;
             return;
         }
-
-        if(format === 'cuil') {
-            value = formatCUIL(String(value))
-            return;
-        }
-
-        if (format === "money") {
-            value = formatMoney(String(value));
-            return;
-        }
+        inputType = showPassword ? "text" : "password";
     });
 </script>
 
@@ -92,7 +82,7 @@
             oninput={handleInput}
         />
 
-        {#if type === "password" && showToggle}
+        {#if showToggle}
             <button type="button" class="toggle-btn" onclick={togglePassword}>
                 <Icon src={showPassword ? eyeClosed : eyeOpen} />
             </button>
