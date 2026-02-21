@@ -81,7 +81,7 @@
             <p>Productos más vendidos</p>
             <ul>
                 {#each topProducts as product}
-                    <p>{product.nombre_producto} - {product.total_vendido}</p>
+                    <p>{product.nombre_producto} - {product.total_vendido} uds</p>
                 {/each}
             </ul>
         </div>

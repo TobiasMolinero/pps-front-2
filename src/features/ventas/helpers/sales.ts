@@ -5,12 +5,12 @@ import { get } from "svelte/store";
 import { storeSales } from "../store";
 
 export const columns = [
-    { key: "id", label: "# ID" },
-    { key: "fecha_venta", label: "Fecha" },
-    { key: "usuario", label: "Vendedor" },
-    { key: "estado", label: "Estado" },
+    // { key: "id", label: "# ID" },
     { key: "nro_factura", label: "Nro. factura" },
     { key: "tipo_factura", label: "Tipo factura" },
+    { key: "fecha_venta", label: "Fecha" },
+    { key: "estado", label: "Estado" },
+    { key: "usuario", label: "Vendedor" },
     { key: "importe_total", label: "Importe" }
 ];
 
