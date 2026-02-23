@@ -1,27 +1,11 @@
 <script lang="ts">
     import { Button, Heading } from '@components/ui';
     import FormEditUser from '@features/auth/components/FormEditUser.svelte';
-    import { apiRoutes } from '@lib/api/endpoints';
-    import { safeApiRequest } from '@lib/api/safeApiRequest';
-    import { alert_error, info, loading } from '@lib/utils/alerts';
+    import FormResetPassword from '@features/auth/components/FormResetPassword.svelte';
     import { user } from '@lib/utils/auth';
 
     let isFormOpen: boolean = $state(false);
-
-    const handleResetPassword = async () => {
-        loading.fire();
-
-        const res = await safeApiRequest<any>('post', apiRoutes.forgot_password, {
-            correo: $user?.correo
-        })
-
-        if(!res.ok) {
-            await alert_error.fire({ text: res.message });
-            return;
-        }
-
-        info.fire({ text: res.data.message })
-    }
+    let isFormPasswordOpen: boolean = $state(false);
 
     const openForm = () => {
         isFormOpen = true;
@@ -59,15 +43,20 @@
                 Editar datos
             {/snippet}
         </Button>
-        <Button onclick={handleResetPassword}>
+        <Button onclick={() => isFormPasswordOpen = true}>
             {#snippet label()}
                 Cambiar contraseña
             {/snippet}
         </Button>
     </div>
 </div>
+
 {#if isFormOpen}
     <FormEditUser onClose={closeForm} />
+{/if}
+
+{#if isFormPasswordOpen}
+    <FormResetPassword onClose={() => isFormPasswordOpen = false} />
 {/if}
 
 <style>

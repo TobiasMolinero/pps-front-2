@@ -26,6 +26,8 @@
         if(!res.ok) {
             if(res.error.code === 'NO_USER') userError = res.message;
             if(res.error.code === 'INVALID_PASSWORD') passwordError = res.message;
+            userValue = "";
+            passwordValue = "";
             await alert_error.fire({ text: res.message });
             return
         }

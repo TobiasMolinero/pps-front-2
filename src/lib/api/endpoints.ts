@@ -6,6 +6,7 @@ export const apiRoutes = {
     refresh_token: '/auth/refresh-token',
     forgot_password: '/auth/forgot-password',
     reset_password: '/auth/reset-password',
+    reset_password_without_token: '/auth/reset-password-without-token/',
     logout: '/auth/logout/',
     check_session: '/auth/user',
     get_users: '/auth/users',

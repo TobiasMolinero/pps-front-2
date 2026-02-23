@@ -19,7 +19,7 @@
         
         if(inputRepeatPassword !== inputNewPassword) {
             loading.close();
-            inputRepeatError = 'Las contraseñas no coinciden!'
+            inputRepeatError = '¡Las contraseñas no coinciden!'
             return;
         }
 

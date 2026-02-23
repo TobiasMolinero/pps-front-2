@@ -52,3 +52,8 @@ export const filterActionsUser = (row: any, actions: Action[]): Action[] => {
 
     return actions;
 };
+
+export async function resetPassword(id: number, data: { nueva_contraseña: string}) {
+    const response = await safeApiRequest('patch', apiRoutes.reset_password_without_token + id, data); 
+    return response;
+}
