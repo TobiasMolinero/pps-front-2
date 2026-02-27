@@ -6,7 +6,7 @@
     import iconWarning from '@assets/icons/warning-fill.svg';
     import iconWarningRed from '@assets/icons/warning-fill-red.svg';
     import { push } from 'svelte-spa-router';
-    import { capitalize, formatearFecha, formatMoney } from "@lib/formatters";
+    import { formatMoney } from "@lib/formatters";
 
     let actualMonth: string = $state("");
     let topProducts: any[] = $state([]);
@@ -63,100 +63,54 @@
     })
 </script>
 
-    <div class="header">
-        <Heading level={2} textAlign="text-start">
-            {#snippet children()}
-                Bienvenido de vuelta {$user?.nombre}
-            {/snippet}
-        </Heading>
-    </div>
-    <div class="section-cards">
-        {#if $user?.rol_usuario === 'admin'}
-            <div class="card total-card">
-                <p>Monto total de ventas en {actualMonth}</p>
-                <span>{formatMoney(String(totalVentas))}</span>
-            </div>
-        {/if}
-        <div class="card top-products-card">
-            <p>Productos más vendidos</p>
-            <ul>
-                {#each topProducts as product}
-                    <p>{product.nombre_producto} - {product.total_vendido} uds</p>
-                {/each}
-            </ul>
+<div class="header">
+    <Heading level={2} textAlign="text-start">
+        {#snippet children()}
+            Bienvenido de vuelta {$user?.nombre}
+        {/snippet}
+    </Heading>
+</div>
+<div class="section-cards">
+    {#if $user?.rol_usuario === 'admin'}
+        <div class="card total-card">
+            <p>Monto total de ventas en {actualMonth}</p>
+            <span>{formatMoney(String(totalVentas))}</span>
+            <a href="/#/ventas">Ver ventas</a>
         </div>
-        {#if isVentasSinFacturar}        
-            <button class="card sin-facturar-card" onclick={navToVentas}>
-                <img src={iconWarning} alt="Icono warning">
-                <div>
-                    <p>¡Hay ventas sin facturar!</p>
-                    <span>
-                        Ir a ventas
-                    </span>
-                </div>
-            </button>
-        {/if}
-        {#if (isProductsSinStock && $user?.rol_usuario === 'vendedor') || (!isVentasSinFacturar && $user?.rol_usuario === 'admin')}        
-            <button class="card sin-stock-card" onclick={navToProducts}>
-                <img src={iconWarningRed} alt="Icono warning">
-                <div>
-                    <p>¡Hay productos sin stock/stock bajo!</p>
-                    <span>
-                        Ir a productos
-                    </span>
-                </div>
-            </button>
-        {/if}
-        <div class="card table-card">
-            <p>Ventas del mes</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Metodo de pago</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Vendedor</th>
-                        <th>Nro. Factura</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each ventas as venta}
-                        <tr>
-                            <td>{formatearFecha(venta.fecha_venta.substring(0, 10))}</td>
-                            <td>{venta.metodo_pago}</td>
-                            <td>{formatMoney(venta.importe_total)}</td>
-                            <td>{capitalize(venta.estado)}</td>
-                            <td>{capitalize(venta.usuario)}</td>
-                            <td>{venta.nro_factura || '-'}</td>
-                        </tr>
-                    {/each}
-                </tbody>
-            </table>
+    {/if}
+    {#if isVentasSinFacturar}
+    <button class="card sin-facturar-card" onclick={navToVentas}>
+        <img src={iconWarning} alt="Icono warning">
+        <div>
+            <p>¡Hay ventas sin facturar!</p>
+            <span>
+                Ir a ventas
+            </span>
         </div>
-        {#if isProductsSinStock && $user?.rol_usuario === 'admin' && isVentasSinFacturar}        
-            <button class="card sin-stock-card" onclick={navToProducts}>
-                <img src={iconWarningRed} alt="Icono warning">
-                <div>
-                    <p>¡Hay productos sin stock/stock bajo!</p>
-                    <span>
-                        Ir a productos
-                    </span>
-                </div>
-            </button>
-        {/if}
+    </button>
+    {/if}
+    {#if isProductsSinStock && $user?.rol_usuario === 'admin' && isVentasSinFacturar}        
+    <button class="card sin-stock-card" onclick={navToProducts}>
+        <img src={iconWarningRed} alt="Icono warning">
+        <div>
+            <p>¡Hay productos sin stock/stock bajo!</p>
+            <span>
+                Ir a productos
+            </span>
+        </div>
+    </button>
+    {/if}
+    <div class="card top-products-card">
+        <p>Productos más vendidos</p>
+        <ul>
+            {#each topProducts as product}
+                <p>{product.nombre_producto} - <span>{product.total_vendido} uds</span></p>
+            {/each}
+        </ul>
     </div>
-
+</div>
+    
 <style>
-
-    /* .section-container {
-        flex: 1;
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-2);
-    } */
-
     .header {
         padding: var(--space-4);
     }
@@ -167,6 +121,7 @@
         padding: var(--space-4);
         display: grid;
         grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 150px);
         gap: var(--space-2);
     }
 
@@ -193,7 +148,7 @@
         justify-content: center;
         row-gap: var(--space-2)
     }
-    .total-card p, .top-products-card p, .sin-facturar-card p {
+    .total-card p, .top-products-card > p, .sin-facturar-card p {
         font-size: 1rem;
         font-weight: 500;
     }
@@ -202,12 +157,22 @@
         font-weight: 600;
         color: var(--color-green-700);
     }
+    .total-card a {
+        color: var(--text-black);
+        font-size: 0.8rem;
+    }
 
     .top-products-card {
         display: flex;
         flex-direction: column;
         align-items: start;
         row-gap: var(--space-2);
+        grid-column: span 2;
+        overflow-y: auto;
+    }
+
+    .top-products-card span {
+        font-weight: 600;
     }
 
     .sin-facturar-card, .sin-stock-card {
@@ -236,27 +201,5 @@
     .sin-stock-card p {
         font-size: 1rem;
         font-weight: 500;
-    }
-    
-    .table-card {
-        grid-column: span 2;
-        overflow: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: start;
-        row-gap: var(--space-2);
-    }
-
-    .table-card p {
-        font-size: 1rem;
-        font-weight: 600;
-    }
-
-    .table-card table {
-        width: 100%;
-    }
-    .table-card thead th {
-        text-align: start;
-        border-bottom: 1px solid var(--color-slate-400);
     }
 </style>

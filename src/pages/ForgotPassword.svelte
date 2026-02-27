@@ -92,7 +92,7 @@
                     <div class="form-button">
                         <Button type="submit" variant="primary">
                             {#snippet label()}
-                                Reestablecer contraseña
+                                Recuperar contraseña
                             {/snippet}
                         </Button>
                     </div>

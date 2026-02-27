@@ -107,8 +107,8 @@
             success.fire({ text: 'La venta fue facturada con éxito' });
             
             loadingTicket.fire();
-            openTicketInNewTab(saleID);
-            success.fire({ text: 'Ticket generado exitosamente' });
+            await openTicketInNewTab(saleID);
+            await success.fire({ text: 'Ticket generado exitosamente' });
         }
 
         $updateSales = true;
