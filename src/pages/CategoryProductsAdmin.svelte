@@ -67,7 +67,7 @@
             return;
         }
 
-        await success.fire({ text: "El producto fue eliminado correctamente." });
+        await success.fire({ text: "La categoría de producto fue eliminado correctamente." });
 
         if ($storeCategories.length === 1 && currentPage > 1) {
             currentPage--;
